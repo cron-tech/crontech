@@ -459,6 +459,8 @@ Import de `DarkSection` removido (o `motion.div` externo replica sua classe `dar
 - `role="presentation"`, clique-para-pular, botão "Pular", fade de saída e o gate por `prefers-reduced-motion` preservados sem alteração; os 4 testes RTL existentes continuam passando inalterados (mesmos seletores: `role="presentation"`, `getByLabelText("Cron Tech")`, botão "Pular").
 - Ver também o fix do bug de CSS relacionado em T10 (a regra de exibição que quebrava o `flex` deste componente).
 
+**Post-commit fix (2026-09-27, revisão visual #2)**: usuário encontrou a lista de serviços do canto superior direito cruzando a linha-guia superior e o pontinho da moldura na altura de "automações". Corrigido com duas mudanças combinadas (não só uma): `FRAME_Y[0]` de `18` para `22` (mais distância entre o topo e a linha-guia superior - a moldura fica levemente assimétrica de propósito, já que a lista de 5 itens no topo é mais alta que o texto de 2 linhas embaixo) e a lista com `gap-0.5` (era `gap-1`) + `leading-tight` (era o padrão do `text-sm`), reduzindo sua altura total. Nenhuma linha/pontinho sobreposto pela lista depois da mudança.
+
 ---
 
 ### T12: Otimizar asset da logo ✅
@@ -615,6 +617,8 @@ Import de `DarkSection` removido (o `motion.div` externo replica sua classe `dar
 
 **Post-commit fix (2026-09-27, revisão visual)**: linhas do terminal trocadas para um comando multi-linha (`cron-tech entregar \` + 2 linhas de continuação com as flags `--sites --sistemas-sob-medida` / `--automacoes --agentes-ia`, usando o novo suporte a `prompt: false` de `TerminalWindow`, T16) + as 2 linhas finais já existentes. Largura máxima do card aumentada de `max-w-sm` para `max-w-xl` (mesma largura da coluna de texto à esquerda) para a linha de continuação mais longa não quebrar no desktop.
 
+**Post-commit fix (2026-09-27, revisão visual #2)**: `max-w-xl` revertido para `max-w-sm` (decisão do usuário - o pedido original era só mudar o conteúdo das linhas, não a largura do card; `max-w-xl` espremia a headline no layout de duas colunas). As linhas novas cabem em `max-w-sm` sem quebrar (linha mais longa, a 2ª continuação com o prefixo de 4 espaços, tem 35 caracteres).
+
 ---
 
 ### T18: Construir `TechStrip` ✅
@@ -640,7 +644,7 @@ Import de `DarkSection` removido (o `motion.div` externo replica sua classe `dar
 
 ---
 
-### T19: Criar `src/content/pain.ts`
+### T19: Criar `src/content/pain.ts` ✅
 
 **What**: 3 pontos de dor (título + descrição) que o modelo OaaS resolve.
 **Where**: `src/content/pain.ts`
@@ -653,16 +657,17 @@ Import de `DarkSection` removido (o `motion.div` externo replica sua classe `dar
 - Skill: NONE
 
 **Done when**:
-- [ ] Array tipado com exatamente 3 itens
-- [ ] `npm run lint` passa
+- [x] Array tipado com exatamente 3 itens
+- [x] `npm run lint` passa
 
 **Tests**: none
-**Gate**: quick
+**Gate**: quick - `npm run lint` verde
 **Commit**: `feat(content): add pain points content`
+**Status**: ✅ Complete. 3 pontos de dor amarrados ao modelo OaaS (preço vira licença sem entrega garantida; prazo que estoura por escopo mutável; ninguém dono do resultado pós-entrega) - cada um resolvido implicitamente pela cobrança por entrega/ownership completo da Cron Tech.
 
 ---
 
-### T20: Construir `PainSection`
+### T20: Construir `PainSection` ✅
 
 **What**: 3 cards de dor a partir de `pain.ts` - sem numeração (não é sequência), sem o kit de card padrão do shadcn.
 **Where**: `src/components/sections/pain.tsx`
@@ -675,16 +680,17 @@ Import de `DarkSection` removido (o `motion.div` externo replica sua classe `dar
 - Skill: `frontend-design`
 
 **Done when**:
-- [ ] 3 cards renderizam, sem badges numerados
-- [ ] `npm run lint` passa
+- [x] 3 cards renderizam, sem badges numerados
+- [x] `npm run lint` passa
 
 **Tests**: none
-**Gate**: quick
+**Gate**: quick - `npm run lint` verde
 **Commit**: `feat(sections): build pain section`
+**Status**: ✅ Complete. Sem numeração e sem o kit de card padrão do shadcn (sem `rounded-*` + sombra uniforme) - cada card é só um `border-t-2 border-primary` (referência ao chrome de terminal/pill, não ao card genérico), título em Newsreader.
 
 ---
 
-### T21: Criar `src/content/audienceFit.ts`
+### T21: Criar `src/content/audienceFit.ts` ✅
 
 **What**: Duas listas ("pra quem é" / "pra quem não é").
 **Where**: `src/content/audienceFit.ts`
@@ -697,16 +703,17 @@ Import de `DarkSection` removido (o `motion.div` externo replica sua classe `dar
 - Skill: NONE
 
 **Done when**:
-- [ ] `fitFor` e `notFitFor` exportados, cada um com ≥3 itens
-- [ ] `npm run lint` passa
+- [x] `fitFor` e `notFitFor` exportados, cada um com ≥3 itens
+- [x] `npm run lint` passa
 
 **Tests**: none
-**Gate**: quick
+**Gate**: quick - `npm run lint` verde
 **Commit**: `feat(content): add audience fit content`
+**Status**: ✅ Complete. 3 itens em cada lista, redigidos em oposição direta um ao outro (ex.: "prefere pagar por entrega" vs. "já tem squad interno completo").
 
 ---
 
-### T22: Construir `AudienceFitSection`
+### T22: Construir `AudienceFitSection` ✅
 
 **What**: Dois blocos/colunas claramente distintos a partir de `audienceFit.ts`.
 **Where**: `src/components/sections/audience-fit.tsx`
@@ -719,16 +726,17 @@ Import de `DarkSection` removido (o `motion.div` externo replica sua classe `dar
 - Skill: `frontend-design`
 
 **Done when**:
-- [ ] As duas listas renderizam em blocos visualmente distintos
-- [ ] `npm run lint` passa
+- [x] As duas listas renderizam em blocos visualmente distintos
+- [x] `npm run lint` passa
 
 **Tests**: none
-**Gate**: quick
+**Gate**: quick - `npm run lint` verde
 **Commit**: `feat(sections): build audience fit section`
+**Status**: ✅ Complete. Dois blocos claramente distintos: "pra quem é" com `bg-card` (superfície preenchida), "pra quem não é" só com borda (`border border-border/60`) - contraste visual sem precisar de cor semântica de erro/sucesso (que não existe no design system desta feature).
 
 ---
 
-### T23: Construir `DarkTerminalSection`
+### T23: Construir `DarkTerminalSection` ⚠️
 
 **What**: Bloco de fundo escuro (`DarkSection`) com `TerminalWindow` grande e animado demonstrando a entrega do resultado pronto pela Cron Tech (proposta OaaS correta, sem a frase removida).
 **Where**: `src/components/sections/dark-terminal.tsx`
@@ -741,18 +749,19 @@ Import de `DarkSection` removido (o `motion.div` externo replica sua classe `dar
 - Skill: `frontend-design`
 
 **Done when**:
-- [ ] Fundo usa `DarkSection` (tokens verdes escuros)
-- [ ] Copy reflete a proposta OaaS correta
-- [ ] Com reduced-motion, o terminal não anima (verificação manual)
-- [ ] `npm run lint` passa
+- [x] Fundo usa `DarkSection` (tokens verdes escuros)
+- [x] Copy reflete a proposta OaaS correta
+- [ ] Com reduced-motion, o terminal não anima (verificação manual) - **pendente**: seção ainda não vista num navegador real; `TerminalWindow` já desliga a digitação sob `useReducedMotion()` (mecanismo verificado por código, não por observação manual) - verificação visual completa fica para T39
+- [x] `npm run lint` passa
 
 **Tests**: none
-**Gate**: quick
+**Gate**: quick - `npm run lint` verde
 **Commit**: `feat(sections): build dark terminal section`
+**Status**: ⚠️ Partial (mesma situação de T15: código completo, 1 verificação manual em navegador adiada para T39). `TerminalWindow` (T16) reutilizado sem alteração - `animated` mais `useReducedMotion()` interno já cobre o requisito, só falta confirmar visualmente. Copy: "Você recebe o projeto pronto. A cobrança só chega depois da entrega." + terminal com 5 linhas (`deploy` → `build`/`testes` sucesso → `deploy: produção` → `fatura: emitida após a entrega, não antes`) - reforça a proposta OaaS sem repetir literalmente a frase do Hero.
 
 ---
 
-### T24: Criar `src/content/testimonials.ts`
+### T24: Criar `src/content/testimonials.ts` ✅
 
 **What**: Array tipado de depoimentos, **vazio por padrão** (nenhum depoimento real disponível ainda).
 **Where**: `src/content/testimonials.ts`
@@ -765,17 +774,18 @@ Import de `DarkSection` removido (o `motion.div` externo replica sua classe `dar
 - Skill: NONE
 
 **Done when**:
-- [ ] `Testimonial[]` exportado, tipado, array vazio (`[]`)
-- [ ] Nenhum texto de depoimento inventado no arquivo
-- [ ] `npm run lint` passa
+- [x] `Testimonial[]` exportado, tipado, array vazio (`[]`)
+- [x] Nenhum texto de depoimento inventado no arquivo
+- [x] `npm run lint` passa
 
 **Tests**: none
-**Gate**: quick
+**Gate**: quick - `npm run lint` verde
 **Commit**: `feat(content): add testimonials content module (empty by default)`
+**Status**: ✅ Complete. Array vazio, comentário explica por quê e aponta para o consumidor (`DifferentiatorsSection`, T25) que deve tratar o caso vazio.
 
 ---
 
-### T25: Construir `DifferentiatorsSection`
+### T25: Construir `DifferentiatorsSection` ✅
 
 **What**: Seção com ≥3 diferenciais; bloco de depoimentos renderiza **somente** `WHERE` `testimonials.ts` tiver ≥1 item (LP-03 AC5/AC6) - sem placeholder quando vazio.
 **Where**: `src/components/sections/differentiators.tsx`
@@ -788,13 +798,37 @@ Import de `DarkSection` removido (o `motion.div` externo replica sua classe `dar
 - Skill: `frontend-design`
 
 **Done when**:
-- [ ] Teste (RTL): com `testimonials` vazio, o bloco de depoimentos não é renderizado (nenhum elemento correspondente no DOM)
-- [ ] Teste (RTL): com `testimonials` contendo 1+ item, o bloco renderiza com o(s) quote(s)
-- [ ] ≥3 diferenciais sempre renderizam, independente de depoimentos
+- [x] Teste (RTL): com `testimonials` vazio, o bloco de depoimentos não é renderizado (nenhum elemento correspondente no DOM)
+- [x] Teste (RTL): com `testimonials` contendo 1+ item, o bloco renderiza com o(s) quote(s)
+- [x] ≥3 diferenciais sempre renderizam, independente de depoimentos
 
-**Tests**: unit
-**Gate**: full
+**Tests**: unit (2 testes, `src/components/sections/differentiators.test.tsx`)
+**Gate**: full - `npm run lint && npx vitest run` → 14 testes passando no total, 0 falhas
 **Commit**: `feat(sections): build differentiators section with conditional testimonials`
+**Status**: ✅ Complete. `testimonials` é uma prop opcional (default = `testimonials` real, importado de `src/content/testimonials.ts`, hoje vazio) - permite que `page.tsx` use o conteúdo real sem prop nenhuma, e que o teste injete um item fictício só para provar o branch "com depoimento" sem inventar depoimento real no conteúdo (LP-03 AC6 continua satisfeito - nenhum dado fabricado no `content/`, só no teste). Removida a formatação com aspas tipográficas (`"..."`) ao redor do quote no JSX - texto do depoimento fica exato, sem depender de normalização de texto do RTL para o match funcionar.
+
+**Test Adequacy**:
+
+*Check A - Sufficient (coverage mapping):*
+
+| Done-when criterion | `file:line` + assertion | Spec-defined outcome | Covered? |
+| --- | --- | --- | --- |
+| `testimonials` vazio → bloco não renderiza | `differentiators.test.tsx:20` - `expect(screen.queryAllByRole("blockquote")).toHaveLength(0)` | LP-03 AC6: sem depoimento real, sistema SHALL NOT renderizar o bloco | ✅ Yes |
+| `testimonials` com 1+ item → bloco renderiza com o(s) quote(s) | `differentiators.test.tsx:36-39` - `expect(screen.getByText("A entrega chegou exatamente como combinado.")).toBeInTheDocument()`, `expect(screen.getAllByRole("blockquote")).toHaveLength(1)` | LP-03 AC5: com 1+ depoimento, sistema SHALL exibir o bloco | ✅ Yes |
+| ≥3 diferenciais sempre renderizam, independente de depoimentos | `differentiators.test.tsx:9-19` (testimonials vazio) e `:40-42` (testimonials com item) - `expect(screen.getByText(<título>)).toBeInTheDocument()` para os 3 títulos no primeiro teste, +1 título reconfirmado no segundo | LP-03 AC4: seção de diferenciais com pelo menos 3 pontos, em qualquer cenário | ✅ Yes |
+
+*Check C - Necessary (reverse mapping):*
+
+| `file:line` | Maps to | Keep? |
+| --- | --- | --- |
+| `differentiators.test.tsx:9-19` | Done-when #3 (3 diferenciais, caso vazio) | ✅ Keep |
+| `differentiators.test.tsx:20` | Done-when #1 | ✅ Keep |
+| `differentiators.test.tsx:36-39` | Done-when #2 | ✅ Keep |
+| `differentiators.test.tsx:40-42` | Done-when #3 (3 diferenciais, caso com depoimento) | ✅ Keep |
+
+Check B: sem asserção rasa - presença/ausência de `blockquote` por contagem exata (`toHaveLength`), não só "não lança erro"; texto exato de cada título/quote verificado, não só a existência de algum elemento. Check D: segue o padrão RTL do projeto (`src/components/**/*.test.tsx`, `npx vitest run`).
+
+**Verdict**: os 3 critérios cobertos com evidência `file:line`, outcomes batem com o spec (LP-03 AC4/AC5/AC6), nenhuma asserção rasa, nenhum teste especulativo.
 
 ---
 
@@ -1029,7 +1063,7 @@ Import de `DarkSection` removido (o `motion.div` externo replica sua classe `dar
 
 **What**: `page.tsx` (Server Component) importa e ordena todas as seções (Navbar, Hero, TechStrip, Pain, AudienceFit, DarkTerminal, Differentiators, Cases, Services, HowItWorks, Faq, FinalCta, Footer); `IntroOverlay` é montado uma vez no `layout.tsx`, sobreposto à home.
 
-**Nota de processo (decisão do usuário, Phase 3, 2026-09-27)**: a montagem em `page.tsx`/`layout.tsx` deixou de ser um evento único no fim da feature. A partir da Phase 3, `page.tsx` é atualizado incrementalmente ao fim de cada fase (as seções recém-construídas entram na composição naquele momento, para o usuário revisar visualmente via `npm run dev`) - Navbar+Hero+TechStrip e `IntroOverlay` já foram montados ao fim da Phase 3. Esta task (T36) passa a ser a **revisão final** da ordem/composição completa (todas as 13 seções na ordem da referência) e não a primeira montagem - o trabalho real de wiring incremental já foi feito fase a fase.
+**Nota de processo (decisão do usuário, Phase 3, 2026-09-27)**: a montagem em `page.tsx`/`layout.tsx` deixou de ser um evento único no fim da feature. A partir da Phase 3, `page.tsx` é atualizado incrementalmente ao fim de cada fase (as seções recém-construídas entram na composição naquele momento, para o usuário revisar visualmente via `npm run dev`) - Navbar+Hero+TechStrip e `IntroOverlay` já foram montados ao fim da Phase 3; Pain+AudienceFit+DarkTerminal+Differentiators ao fim da Phase 4. Esta task (T36) passa a ser a **revisão final** da ordem/composição completa (todas as 13 seções na ordem da referência) e não a primeira montagem - o trabalho real de wiring incremental já foi feito fase a fase.
 **Where**: `src/app/page.tsx`
 **Depends on**: T11, T14, T15, T17, T18, T20, T22, T23, T25, T28, T29, T31, T33, T34, T35
 **Reuses**: todos os componentes de seção construídos nas fases 2-6
