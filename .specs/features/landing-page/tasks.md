@@ -365,7 +365,7 @@ T12 → T40
 
 ---
 
-### T10: Script de pré-hidratação da intro + wiring no `layout.tsx`
+### T10: Script de pré-hidratação da intro + wiring no `layout.tsx` ✅
 
 **What**: Adiciona um script inline (via `<script dangerouslySetInnerHTML>` antes do conteúdo, ou `next/script` `strategy="beforeInteractive"`) que replica a lógica de `shouldSkipIntro` (sessionStorage + `matchMedia("(prefers-reduced-motion: reduce)")`) e marca `<html data-intro="show"|"skip">`; adiciona `<html suppressHydrationWarning>`; adiciona a regra CSS que esconde `.intro-overlay` por padrão e só mostra sob `html[data-intro="show"] .intro-overlay`.
 **Where**: `src/app/layout.tsx`
@@ -378,18 +378,19 @@ T12 → T40
 - Skill: NONE
 
 **Done when**:
-- [ ] `<html suppressHydrationWarning>` presente
-- [ ] Regra CSS confirma: sem `data-intro="show"`, `.intro-overlay` tem `display: none` (verificado inspecionando o HTML gerado sem JS)
-- [ ] Comentário no script aponta para `src/lib/intro-state.ts` como fonte da verdade da lógica
-- [ ] `npm run lint && npm run build` passam
+- [x] `<html suppressHydrationWarning>` presente
+- [x] Regra CSS confirma: sem `data-intro="show"`, `.intro-overlay` tem `display: none` (verificado inspecionando o HTML gerado sem JS)
+- [x] Comentário no script aponta para `src/lib/intro-state.ts` como fonte da verdade da lógica
+- [x] `npm run lint && npm run build` passam
 
 **Tests**: none
-**Gate**: build
+**Gate**: build - `npm run lint && npm run build` → ambos verdes
 **Commit**: `feat(intro): add pre-hydration script and CSS-hidden overlay gate (AD-001)`
+**Status**: ✅ Complete. Verificado no HTML estático gerado (`.next/server/app/index.html`): `<html>` SSR não carrega `data-intro` (escrito só pelo script no cliente); regra `.intro-overlay{display:none}html[data-intro="show"] .intro-overlay{display:block}` presente no payload. Chave de sessionStorage (`crontech:intro-seen`) documentada no comentário para manter paridade com `IntroOverlay` (T11).
 
 ---
 
-### T11: Construir `IntroOverlay`
+### T11: Construir `IntroOverlay` ✅
 
 **What**: Componente client que lê `data-intro` do `<html>` ao montar, reproduz logo (via `next/image`) + typewriter "Cron Tech" (fonte Newsreader itálica, `motion`), reage a clique/toque em qualquer ponto e a um controle "Pular", grava a flag no `sessionStorage` ao completar/pular, e chama `shouldSkipIntro` (import real de `src/lib/intro-state.ts`) como segunda checagem client-side.
 **Where**: `src/components/intro/intro-overlay.tsx`
@@ -402,18 +403,43 @@ T12 → T40
 - Skill: `frontend-design`
 
 **Done when**:
-- [ ] Teste (RTL): com `sessionStorage` vazio e reduced-motion desligado, overlay renderiza e a animação inicia
-- [ ] Teste (RTL): com flag de intro já vista no `sessionStorage`, `shouldSkipIntro` retorna `true` e o componente não inicia a animação
-- [ ] Teste (RTL): clique no controle "Pular" (ou no overlay) chama a gravação da flag no `sessionStorage` e dispara o callback de conclusão
-- [ ] Verificação manual: `prefers-reduced-motion` ativo pula a animação (mock de `matchMedia`)
+- [x] Teste (RTL): com `sessionStorage` vazio e reduced-motion desligado, overlay renderiza e a animação inicia
+- [x] Teste (RTL): com flag de intro já vista no `sessionStorage`, `shouldSkipIntro` retorna `true` e o componente não inicia a animação
+- [x] Teste (RTL): clique no controle "Pular" (ou no overlay) chama a gravação da flag no `sessionStorage` e dispara o callback de conclusão
+- [x] Verificação manual: `prefers-reduced-motion` ativo pula a animação (mock de `matchMedia`) - implementada como teste automatizado (mesma técnica de mock), não só manual
 
-**Tests**: unit
-**Gate**: full
+**Tests**: unit (4 testes, `src/components/intro/intro-overlay.test.tsx`)
+**Gate**: full - `npm run lint && npx vitest run` → 12 testes passando no total, 0 falhas
 **Commit**: `feat(intro): build IntroOverlay component with skip and reduced-motion handling`
+**Status**: ✅ Complete. Decisão de mostrar a intro (`shouldPlay`) usa `useSyncExternalStore` (não `useEffect` + `setState`) para ler `sessionStorage`/`matchMedia` no cliente sem violar a regra de lint `react-hooks/set-state-in-effect` (React Compiler ESLint, `eslint-config-next` 16) e sem mismatch de hidratação (server snapshot fixo em `false`; client snapshot chama `shouldSkipIntro` de verdade). Dismissal (clique/"Pular"/timeout de conclusão) usa `useState` local combinado (`visible = shouldPlay && !dismissed`). Logo ainda referencia o PNG original (T12 troca pelo WebP otimizado). Glow verde via `--brand-lime` (var CSS existente, sem novo token). Chave de sessão idêntica à do script inline (T10): `crontech:intro-seen`.
+
+**Test Adequacy**:
+
+*Check A - Sufficient (coverage mapping):*
+
+| Done-when criterion / AC | `file:line` + assertion | Spec-defined outcome | Covered? |
+| --- | --- | --- | --- |
+| Overlay renderiza + animação inicia (sessão vazia, reduced-motion off) | `src/components/intro/intro-overlay.test.tsx:34-35` - `expect(screen.getByRole("presentation")).toBeInTheDocument()`, `expect(screen.getByLabelText("Cron Tech")).toBeInTheDocument()` | LP-01 AC1: reproduzir a animação de entrada | ✅ Yes |
+| Flag já vista → não inicia | `intro-overlay.test.tsx:43` - `expect(screen.queryByRole("presentation")).not.toBeInTheDocument()` | LP-01 AC2: pular direto para a home | ✅ Yes |
+| `prefers-reduced-motion` ativo → pula | `intro-overlay.test.tsx:51` - `expect(screen.queryByRole("presentation")).not.toBeInTheDocument()` (matchMedia mockado `matches:true`) | LP-01 AC4 | ✅ Yes |
+| Clique em "Pular" grava flag + encerra | `intro-overlay.test.tsx:60-61` - `expect(sessionStorage.getItem(INTRO_SESSION_KEY)).toBe("1")`, `expect(screen.queryByRole("presentation")).not.toBeInTheDocument()` | LP-01 AC3, AC5 | ✅ Yes |
+
+*Check C - Necessary (reverse mapping):*
+
+| `file:line` | Maps to | Keep? |
+| --- | --- | --- |
+| `intro-overlay.test.tsx:31-36` | Done-when #1 / AC1 | ✅ Keep |
+| `intro-overlay.test.tsx:38-44` | Done-when #2 / AC2 | ✅ Keep |
+| `intro-overlay.test.tsx:46-52` | Done-when #4 / AC4 | ✅ Keep |
+| `intro-overlay.test.tsx:54-62` | Done-when #3 / AC3, AC5 | ✅ Keep |
+
+Check B: nenhuma asserção rasa (presença/ausência de elemento + valor exato gravado no `sessionStorage`, não apenas call-count). Check D: segue o padrão RTL já usado no projeto (`src/components/**/*.test.tsx`, `npx vitest run`).
+
+**Verdict**: todos os 4 critérios cobertos com evidência `file:line`, outcomes batem com o spec, nenhuma asserção rasa, nenhum teste especulativo.
 
 ---
 
-### T12: Otimizar asset da logo
+### T12: Otimizar asset da logo ✅
 
 **What**: Redimensiona/converte `public/brand/logo-crontech.png` (~1 MB) para um WebP (e/ou SVG, se uma fonte vetorial ficar disponível) em tamanhos apropriados para a intro (maior) e a navbar (menor); usa a logo otimizada via `next/image` dentro do `IntroOverlay`.
 **Where**: `public/brand/logo-crontech.webp` (novo), `src/components/intro/intro-overlay.tsx` (uso)
@@ -426,13 +452,14 @@ T12 → T40
 - Skill: NONE
 
 **Done when**:
-- [ ] Novo asset WebP ≤ 150 KB, com dimensões adequadas ao maior uso (intro)
-- [ ] `IntroOverlay` usa `next/image` com `width`/`height` explícitos (sem `layout shift`)
-- [ ] PNG original mantido no repo só se ainda referenciado em outro lugar; caso contrário, removido
+- [x] Novo asset WebP ≤ 150 KB, com dimensões adequadas ao maior uso (intro)
+- [x] `IntroOverlay` usa `next/image` com `width`/`height` explícitos (sem `layout shift`)
+- [x] PNG original mantido no repo só se ainda referenciado em outro lugar; caso contrário, removido
 
 **Tests**: none
-**Gate**: quick
+**Gate**: quick - `npm run lint` verde (mais `npx vitest run` e `npx tsc --noEmit` verdes, por segurança, já que o asset é consumido por T11)
 **Commit**: `perf(brand): optimize logo asset to WebP for intro`
+**Status**: ✅ Complete. `public/brand/logo-crontech.png` (1024x1024, 1.059.520 bytes) redimensionado para 256x256 e convertido via `sharp` (`webp quality:82`) → `public/brand/logo-crontech.webp`, 1.516 bytes (1,5 KB, muito abaixo do limite de 150 KB). Nenhuma outra referência ao PNG restava no código (`grep` em `src/`/`public/`) - PNG original removido do repo. `IntroOverlay` (T11) já usava `next/image` com `width={96} height={96}`; só o `src` foi trocado para o novo `.webp`. SVG vetorial não estava disponível (fora de escopo desta task, conforme `design.md`).
 
 ---
 

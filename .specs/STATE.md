@@ -37,10 +37,15 @@
 ## Handoff
 
 - **Feature**: landing-page (`.specs/features/landing-page/`)
-- **Phase / Task**: Execute - Phase 1 (Fundação) completa, T1-T9 de 40. Aguardando OK do usuário para abrir a Phase 2 (Intro de entrada).
-- **Completed**: Specify, Design, Tasks (todos aprovados e validados). Execute: T1-T9 implementadas, gate verde em cada uma (ver `tasks.md` para o detalhe por task).
+- **Phase / Task**: Execute - Phase 1 (Fundação, T1-T9) e Phase 2 (Intro de entrada, T10-T12) completas, 12 de 40. Phase 1 já commitada pelo usuário (`4d32afa`..`f0bcb9c`, confirmado em `git log`). Phase 2 implementada nesta sessão, ainda não commitada. Aguardando OK do usuário para abrir a Phase 3 (Navegação e Hero).
+- **Completed**: Specify, Design, Tasks (todos aprovados e validados). Execute: T1-T12 implementadas, gate verde em cada uma (ver `tasks.md` para o detalhe por task).
 - **In-progress**: nenhum arquivo em edição
-- **Next step**: com o OK do usuário, iniciar Phase 2 (T10: script de pré-hidratação da intro + wiring no `layout.tsx`)
+- **Next step**: com o OK do usuário, iniciar Phase 3 (T13: `src/content/techStack.ts`)
 - **Blockers**: none
-- **Uncommitted files** (nenhum commit git foi feito - regra do `CLAUDE.md`, commits são sugeridos e o usuário executa manualmente): `package.json`, `package-lock.json` (vitest/RTL/@vitejs-plugin-react/jsdom adicionados), `vitest.config.ts`, `vitest.setup.ts`, `src/lib/smoke.test.ts`, `src/components/ui/accordion.tsx`, `src/components/ui/sheet.tsx`, `src/app/globals.css`, `src/app/layout.tsx`, `src/content/site.ts`, `src/lib/whatsapp.ts`, `src/lib/whatsapp.test.ts`, `src/lib/intro-state.ts`, `src/lib/intro-state.test.ts`, `src/components/layout/dark-section.tsx`, `.specs/features/landing-page/tasks.md` (status das tasks), `.specs/STATE.md`
-- **Branch**: `feature/landing-page` (criada a partir de `develop`, ainda não commitada - trabalho está no working tree local)
+- **Uncommitted files** (nenhum commit git foi feito nesta sessão - regra do `CLAUDE.md`, commits são sugeridos e o usuário executa manualmente):
+  - `src/app/layout.tsx` (T10 - script de pré-hidratação + CSS de gate da intro)
+  - `src/components/intro/intro-overlay.tsx`, `src/components/intro/intro-overlay.test.tsx` (T11, com ajuste de T12 no `src` da imagem - ver nota de sobreposição abaixo)
+  - `public/brand/logo-crontech.webp` (novo, T12), `public/brand/logo-crontech.png` (removido, T12)
+  - `.specs/features/landing-page/tasks.md` (status T10-T12), `.specs/STATE.md`
+  - **Sobreposição entre tasks**: `src/components/intro/intro-overlay.tsx` foi criado por T11 e depois só teve a linha `src` da imagem alterada por T12 (troca do PNG pelo WebP). Como a working tree só guarda o estado final do arquivo, recomenda-se um único commit para T11+T12 (ver sugestão de commits abaixo) em vez de tentar separar por task.
+- **Branch**: `feature/landing-page` (branch atual; Phase 1 já commitada nela pelo usuário)
