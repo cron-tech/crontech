@@ -392,6 +392,8 @@ T12 → T40
 
 **Post-commit fix (2026-09-27)**: `<html lang="en">` → `<html lang="pt-BR">` (conteúdo do site é em português; item não coberto pelo Done-when original de T10, mas pertence ao mesmo arquivo). Verificado em `npm run build` → `.next/server/app/index.html` com `lang="pt-BR"`.
 
+**Post-commit fix (2026-09-27, revisão visual da intro)**: bug de CSS encontrado pelo usuário - a regra `.intro-overlay{display:none}html[data-intro="show"] .intro-overlay{display:block}` forçava `display:block` quando visível, sobrescrevendo o `display:flex` que o próprio `IntroOverlay` (T11) usa para centralizar o conteúdo - todo o conteúdo caía no canto superior esquerdo. Corrigido para uma única regra que só esconde, nunca mostra: `html:not([data-intro="show"]) .intro-overlay{display:none}` - sem a contraparte "mostrar", o `display` original do elemento (`flex`, definido na classe do próprio componente) nunca é sobrescrito. Comportamento sem JS mantido (elemento nunca recebe a classe/atributo, então a regra `:not(...)` continua escondendo por padrão). Verificado no HTML gerado (`npm run build` → `.next/server/app/index.html`): só a nova regra está presente, nenhuma versão com `display:block`.
+
 ---
 
 ### T11: Construir `IntroOverlay` ✅
@@ -447,6 +449,15 @@ Check B: nenhuma asserção rasa (presença/ausência de elemento + valor exato 
 3. **Grid sutil**: camada `aria-hidden` com `repeating-linear-gradient` (linhas de 1px a cada 64px, horizontal + vertical) em `var(--brand-lime)` a 12% de opacidade, atrás do glow/logo/texto - referência visual de `docs/references/crontech-ref-home.webp`.
 4. **Logo solta**: removido o container `overflow-hidden rounded-3xl shadow-lg` (existia para conter o fundo cream opaco do PNG antigo); a logo (agora com alfa transparente, ver T12) é exibida direto sobre o fundo escuro/glow.
 Import de `DarkSection` removido (o `motion.div` externo replica sua classe `dark bg-background text-foreground` diretamente, já que `DarkSection` não é um componente `motion`). Regressão verificada: `npm run lint`, `npx tsc --noEmit`, `npx vitest run` (12/12) e `npm run build` verdes.
+
+**Post-commit fix (2026-09-27, revisão visual da intro)**: composição reaproximada da referência `docs/references/crontech-ref-home.webp` (guia de layout, não conteúdo/marca), substituindo a grade genérica do fix anterior:
+- Fundo trocado para quase-preto esverdeado via `color-mix(in srgb, var(--brand-dark) 55%, black)` (era `bg-background` = `--brand-dark` puro, verde médio-escuro, não "quase preto"); classe `dark text-foreground` mantida para os tokens dos filhos (ex.: `Button` "Pular").
+- Glow central único substituído por 4 blobs nos cantos (`-top-24 -left-24` etc., `blur-3xl`, alternando `--brand-mid`/`--brand-lime`), recortados pelo `overflow-hidden` do container.
+- Grade genérica (`repeating-linear-gradient` a cada 64px) substituída por: 2 linhas horizontais finas de ponta a ponta (`FRAME_Y = [18, 82]`, percentuais), 2 linhas verticais só entre elas (`FRAME_X = [8, 92]`) formando uma moldura interna, e 4 pontinhos exatamente nas interseções (`FRAME_CORNERS`) - servem tanto de "cantos da moldura" quanto de "interseção das guias com a moldura" (mesmo conjunto de 4 pontos, sem duplicar elementos).
+- Logo + "Cron Tech" agora lado a lado (`flex-col sm:flex-row`, empilha no mobile), maiores (`text-4xl sm:text-6xl` no nome; logo `h-16/h-20`), typewriter mantido.
+- 4 textos de canto em Newsreader (`font-heading`), cada um com um trecho em itálico: topo-esquerda "outcome *as a service*"; topo-direita lista `sites/sistemas/mini erp/automações/agentes de IA` empilhada e alinhada à direita, opacidade alternada por índice, `hidden md:flex` (some no mobile); base-esquerda "resultado pronto, / cobrado pela *entrega*." (itálico em `var(--brand-lime)`); base-direita "cron *tech*". Todos `aria-hidden` (copy decorativa de brand board, não conteúdo essencial - o nome acessível "Cron Tech" continua no `aria-label` do wordmark central).
+- `role="presentation"`, clique-para-pular, botão "Pular", fade de saída e o gate por `prefers-reduced-motion` preservados sem alteração; os 4 testes RTL existentes continuam passando inalterados (mesmos seletores: `role="presentation"`, `getByLabelText("Cron Tech")`, botão "Pular").
+- Ver também o fix do bug de CSS relacionado em T10 (a regra de exibição que quebrava o `flex` deste componente).
 
 ---
 
@@ -574,6 +585,8 @@ Import de `DarkSection` removido (o `motion.div` externo replica sua classe `dar
 **Commit**: `feat(ui): add reusable TerminalWindow component`
 **Status**: ✅ Complete. Chrome fixo em `var(--brand-dark)`/`var(--brand-cream)` (não `bg-background/text-foreground`) - um terminal real é sempre escuro, independente do tema ambiente (usado tanto no Hero claro quanto na `DarkTerminalSection`, T23). `rounded-sm` (2px). Reduced-motion checado via `useReducedMotion()` (`motion/react`), mesma técnica já usada em `IntroOverlay` (T11) - `animated` só tem efeito quando reduced-motion está desligado. Digitação: delay acumulado por caractere (linha inteira, incluindo o prefixo `"$ "` que o próprio componente adiciona), sem repetição (roda uma vez ao montar, sem loop).
 
+**Post-commit fix (2026-09-27)**: `lines` passa a aceitar `string | { text: string; prompt?: boolean }` (`TerminalLine`, exportado) em vez de só `string[]` - `prompt: false` marca uma linha de continuação: sem o prefixo `"$ "`, indentada com 4 espaços (`CONTINUATION_PREFIX`) em vez do prompt. Motivado por T17 precisar de um comando `cron-tech entregar \` quebrado em múltiplas linhas com `--flags`. Cálculo de delay da digitação generalizado para usar o comprimento real de cada `fullLine` (prefixo variável) em vez de assumir `+2` fixo (`"$ "`) para todas. Container ganhou `whitespace-pre` (necessário para a indentação de 4 espaços não colapsar) e `overflow-x-auto` (rede de segurança em telas muito estreitas). `npm run lint`, `npx tsc --noEmit` e `npm run build` verdes.
+
 ---
 
 ### T17: Construir `Hero` ✅
@@ -599,6 +612,8 @@ Import de `DarkSection` removido (o `motion.div` externo replica sua classe `dar
 **Status**: ✅ Complete. Headline: "Você entrega o problema. A Cron Tech entrega o resultado pronto." (framing de `[[business_model_crontech]]`/memória do usuário: "you hand off the problem, Cron Tech delivers the finished outcome"); subheadline cita o modelo Outcome as a Service e "paga pelo trabalho entregue, não por licença de uso" (frase de `context.md`), sem a frase removida da referência Chiarelli. CTA usa `buildWhatsAppLink()` sem argumento (mensagem default já é de primeiro contato: "Olá! Quero saber mais sobre os serviços da Cron Tech."), `target="_blank" rel="noopener noreferrer"`. `TerminalWindow` mini (`animated`) com linhas que reforçam a proposta OaaS (entrega → cobrança liberada após a entrega).
 
 **Post-commit fix (2026-09-27, Phase 3)**: erro de digitação corrigido na 3ª linha do terminal - "cobranca" → "cobrança".
+
+**Post-commit fix (2026-09-27, revisão visual)**: linhas do terminal trocadas para um comando multi-linha (`cron-tech entregar \` + 2 linhas de continuação com as flags `--sites --sistemas-sob-medida` / `--automacoes --agentes-ia`, usando o novo suporte a `prompt: false` de `TerminalWindow`, T16) + as 2 linhas finais já existentes. Largura máxima do card aumentada de `max-w-sm` para `max-w-xl` (mesma largura da coluna de texto à esquerda) para a linha de continuação mais longa não quebrar no desktop.
 
 ---
 

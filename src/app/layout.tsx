@@ -40,8 +40,8 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <script
           dangerouslySetInnerHTML={{ __html: INTRO_PRE_HYDRATION_SCRIPT }}
         />
-        {/* Hidden by default so the overlay never appears without JS; only html[data-intro="show"] reveals it. */}
-        <style>{`.intro-overlay{display:none}html[data-intro="show"] .intro-overlay{display:block}`}</style>
+        {/* Hidden by default (and without JS, since data-intro is never set) - never forces display:block, so it doesn't fight the overlay's own display:flex when shown. */}
+        <style>{`html:not([data-intro="show"]) .intro-overlay{display:none}`}</style>
       </head>
       <body className="min-h-full flex flex-col">
         <IntroOverlay />

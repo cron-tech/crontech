@@ -5,11 +5,27 @@ import { cn } from "@/lib/utils";
 
 const CHAR_DELAY_MS = 30;
 const LINE_PAUSE_MS = 250;
+const PROMPT_PREFIX = "$ ";
+const CONTINUATION_PREFIX = "    ";
+
+export interface TerminalLineObject {
+  text: string;
+  /** false = continuation line (no "$ " prompt, indented instead). Default: true. */
+  prompt?: boolean;
+}
+
+export type TerminalLine = string | TerminalLineObject;
 
 interface TerminalWindowProps {
-  lines: string[];
+  lines: TerminalLine[];
   animated?: boolean;
   className?: string;
+}
+
+function toFullLine(line: TerminalLine): string {
+  if (typeof line === "string") return `${PROMPT_PREFIX}${line}`;
+  const prompt = line.prompt ?? true;
+  return `${prompt ? PROMPT_PREFIX : CONTINUATION_PREFIX}${line.text}`;
 }
 
 export function TerminalWindow({
@@ -19,6 +35,7 @@ export function TerminalWindow({
 }: TerminalWindowProps) {
   const prefersReducedMotion = useReducedMotion();
   const shouldAnimate = animated && !prefersReducedMotion;
+  const fullLines = lines.map(toFullLine);
 
   return (
     <div
@@ -35,17 +52,15 @@ export function TerminalWindow({
         <span className="h-2.5 w-2.5 rounded-full bg-[#ffbd2e]" />
         <span className="h-2.5 w-2.5 rounded-full bg-[#27c93f]" />
       </div>
-      <div className="space-y-1.5 px-4 py-4 font-mono text-sm">
-        {lines.map((line, lineIndex) => {
-          const fullLine = `$ ${line}`;
-
+      <div className="space-y-1.5 overflow-x-auto px-4 py-4 font-mono text-sm whitespace-pre">
+        {fullLines.map((fullLine, lineIndex) => {
           if (!shouldAnimate) {
             return <p key={lineIndex}>{fullLine}</p>;
           }
 
-          const charsBefore = lines
+          const charsBefore = fullLines
             .slice(0, lineIndex)
-            .reduce((sum, previousLine) => sum + previousLine.length + 2, 0);
+            .reduce((sum, previousLine) => sum + previousLine.length, 0);
 
           return (
             <p key={lineIndex}>
@@ -63,7 +78,7 @@ export function TerminalWindow({
                     duration: 0.01,
                   }}
                 >
-                  {char === " " ? " " : char}
+                  {char}
                 </motion.span>
               ))}
             </p>

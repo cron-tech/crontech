@@ -1,11 +1,16 @@
 import { Button } from "@/components/ui/button";
-import { TerminalWindow } from "@/components/ui/terminal-window";
+import {
+  TerminalWindow,
+  type TerminalLine,
+} from "@/components/ui/terminal-window";
 import { buildWhatsAppLink } from "@/lib/whatsapp";
 
-const HERO_TERMINAL_LINES = [
-  "cron-tech entregar --projeto landing-page",
-  "aguardando aprovação do cliente",
-  "cobrança liberada após a entrega",
+const HERO_TERMINAL_LINES: TerminalLine[] = [
+  { text: "cron-tech entregar \\" },
+  { text: "--sites --sistemas-sob-medida \\", prompt: false },
+  { text: "--automacoes --agentes-ia", prompt: false },
+  { text: "aguardando aprovação do cliente" },
+  { text: "cobrança liberada após a entrega" },
 ];
 
 export function Hero() {
