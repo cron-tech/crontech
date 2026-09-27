@@ -58,8 +58,7 @@ Landing page institucional da Cron Tech em pt-BR, seguindo a estrutura visual da
 
 ### Screenshots dos cases
 
-- Arquivos reais fornecidos pelo usuário em `public/cases/`: `performace-motion.png`, `studio-aureum.png`, `evolution.png`, exibidos via `next/image`.
-- Nota: o primeiro arquivo está com typo no nome no disco ("performace", sem o "n" de "performance"). Mantido como está para não mexer no arquivo do usuário sem confirmação — referenciado exatamente assim no conteúdo.
+- Arquivos reais fornecidos pelo usuário em `public/cases/`: `performance-motion.png`, `studio-aureum.png`, `evolution.png`, exibidos via `next/image`.
 
 ### Reveal de scroll (seções abaixo da dobra)
 

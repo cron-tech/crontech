@@ -229,7 +229,7 @@ interface Case {
   name: string                 // "Performance Motion" etc.
   description: string
   demoUrl: string               // URL real, obrigatória (só existem os 3 reais)
-  imageSrc: string               // "/cases/performace-motion.png" etc. (nome real em disco, com typo no primeiro arquivo)
+  imageSrc: string               // "/cases/performance-motion.png" etc. (nome real em disco)
   imageAlt: string
 }
 ```
@@ -294,7 +294,7 @@ interface AudienceFit { fitFor: string[]; notFitFor: string[] }
 | FAQ | shadcn `Accordion` `type="single" collapsible` | Satisfaz "um aberto por vez" (LP-06 AC2) via prop, sem estado manual |
 | Links de WhatsApp | Helper único `buildWhatsAppLink()` lendo `site.ts` | Satisfaz centralização (LP-07 AC9); evita string concatenada espalhada pelos componentes |
 | Cards de conteúdo | Divs com estilo próprio, não o `<Card>` padrão do shadcn | Evita o "kit SaaS" (mesmo raio + sombra cinza genérica em tudo) que o brief de design pede para evitar |
-| Screenshots dos cases | `next/image` com os arquivos reais de `public/cases/` (`performace-motion.png`, `studio-aureum.png`, `evolution.png`) | Otimização automática de formato/tamanho; evita placeholder — arquivos já fornecidos pelo usuário |
+| Screenshots dos cases | `next/image` com os arquivos reais de `public/cases/` (`performance-motion.png`, `studio-aureum.png`, `evolution.png`) | Otimização automática de formato/tamanho; evita placeholder — arquivos já fornecidos pelo usuário |
 | Reveal de scroll (abaixo da dobra) | `motion` `whileInView`, fade + translate ≤16px, ~0.4s, uma vez, off em reduced-motion | AD-004 — decisão do usuário; mantém hero/navbar livres de animação de entrada (protege LCP) |
 
 > **Decisões de projeto (AD-001 a AD-004) registradas em `.specs/STATE.md`.**
