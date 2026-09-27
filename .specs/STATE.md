@@ -37,19 +37,17 @@
 ## Handoff
 
 - **Feature**: landing-page (`.specs/features/landing-page/`)
-- **Phase / Task**: Execute - Phases 1-4 completas e commitadas pelo usuário (T1-T25 de 40). Usuário aprovou a Phase 4 visualmente (sem mudança de layout) e, na sequência, definiu as regras comerciais oficiais da Cron Tech (preço fechado, 30% entrada/70% entrega, 30 dias de ajustes grátis) - pediu uma passada de copy no que já foi escrito para eliminar qualquer texto que sugerisse "cobrança só depois da entrega". Passada aplicada nesta sessão, ainda não commitada. **Sessão pausada aqui a pedido do usuário**: aguardando ele revisar a copy antes de abrir a Phase 5.
-- **Completed**: Specify, Design, Tasks (todos aprovados e validados). Execute: T1-T25 implementadas, gate verde em cada uma (ver `tasks.md`). `page.tsx`/`layout.tsx` compõem Navbar, Hero, TechStrip, PainSection, AudienceFitSection, DarkTerminalSection, DifferentiatorsSection e IntroOverlay; as demais 5 seções ainda não existem (Phases 5-6). Regras comerciais oficiais registradas em `.specs/features/landing-page/context.md` (seção "Regras comerciais") e na memória de projeto do usuário (`business_model_crontech.md`) - valem para toda copy futura, inclusive Phases 5-6.
-- **In-progress**: nenhum arquivo em edição. **Não iniciar a Phase 5 sem confirmação explícita do usuário.**
-- **Next step**: com o OK do usuário após revisar a copy, iniciar Phase 5 (T26: `src/content/services.ts`) - lembrar de aplicar as regras comerciais desde a primeira escrita (Serviços/Como funciona/FAQ), não como um fix posterior.
+- **Phase / Task**: Execute - Phases 1-4 completas e commitadas pelo usuário, incluindo o fix de regras comerciais (T1-T25 de 40). Nesta sessão: 3 ajustes finos pré-Phase 5 (subheadline do Hero, travessão em vez de hífen-pausa, correção deste Handoff) seguidos da Phase 5 completa (T26-T31) - tudo ainda não commitado (fix + 6 commits de feature sugeridos, ver relatório da sessão). **Sessão pausada aqui a pedido do usuário**: aguardando ele revisar visualmente Cases/Services/HowItWorks via `npm run dev` antes de abrir a Phase 6.
+- **Completed**: Specify, Design, Tasks (todos aprovados e validados). Execute: T1-T31 implementadas, gate verde em cada uma (ver `tasks.md`). `page.tsx`/`layout.tsx` compõem Navbar, Hero, TechStrip, PainSection, AudienceFitSection, DarkTerminalSection, DifferentiatorsSection, CasesSection, ServicesSection, HowItWorksSection e IntroOverlay - com os `id`s de âncora `#casos`/`#servicos`/`#como-funciona` batendo com `navLinks` de `site.ts`. Faltam só FaqSection, FinalCtaSection e Footer (Phase 6). Regras comerciais oficiais em `.specs/features/landing-page/context.md` (seção "Regras comerciais") e na memória de projeto do usuário (`business_model_crontech.md`) - aplicadas desde a primeira escrita em toda a Phase 5.
+- **In-progress**: nenhum arquivo em edição. **Não iniciar a Phase 6 sem confirmação explícita do usuário.**
+- **Next step**: com o OK do usuário após a revisão visual, iniciar Phase 6 (T32: `src/content/faq.ts`)
 - **Blockers**: none (bloqueio é de processo - aguardando review do usuário)
 - **Pendências conhecidas para T39 (QA de acessibilidade)**: verificação manual em navegador de T15 (`Tab`/`Esc` no `MobileMenu`) e T23 (terminal grande não anima sob reduced-motion) - código já implementado e coberto por mecanismo (Radix `Dialog` / `useReducedMotion()`), só falta observação visual direta.
-- **Uncommitted files** (nenhum commit git foi feito nesta sessão - regra do `CLAUDE.md`, commits são sugeridos e o usuário executa manualmente):
-  - `.specs/features/landing-page/context.md` (nova seção "Regras comerciais" + notas em "Exibição de preços" e "Proposta de valor")
-  - `src/components/sections/dark-terminal.tsx` (título e as 7 linhas do terminal reescritos - copy antiga violava a regra de pagamento)
-  - `src/components/sections/hero.tsx` (última linha do terminal + subheadline reescritas pelo mesmo motivo)
-  - `src/components/intro/intro-overlay.tsx` (texto do canto inferior esquerdo: "cobrado pela entrega" → "preço fechado")
-  - `src/components/sections/differentiators.tsx` (descrição de "Entrega documentada, sem caixa-preta" ganhou a política de 30 dias de ajustes grátis; título e os outros 2 diferenciais não mudaram)
-  - `.specs/features/landing-page/tasks.md` (fix notes em T11, T17, T23, T25)
-  - Nenhuma sobreposição entre arquivos neste lote; `differentiators.test.tsx` não precisou mudar (só a descrição mudou, os testes verificam títulos)
-  - Verificado: `npm run lint`, `npx tsc --noEmit`, `npx vitest run` (14/14, inalterados) e `npm run build` verdes; `npm run dev` + `curl` confirmaram a nova copy no HTML gerado (Hero e DarkTerminal são SSR; a copy da intro é client-only, não aparece no HTML estático - checada só por leitura de código)
+- **Uncommitted files** (saída de `git status --porcelain` rodada agora, antes de escrever esta seção - regra do `CLAUDE.md`, commits são sugeridos e o usuário executa manualmente):
+  - **Fix fino pré-Phase 5** (ainda pendente de commit): `src/components/sections/hero.tsx`, `src/components/sections/differentiators.tsx`, `src/content/pain.ts` (hífen-pausa → travessão + subheadline menos ambígua)
+  - **Phase 5 (T26-T31)**: `src/content/services.ts` (T26), `src/content/cases.ts` (T27), `src/components/sections/cases.tsx` (T28), `src/components/sections/services.tsx` (T29), `src/content/howItWorks.ts` (T30), `src/components/sections/how-it-works.tsx` (T31)
+  - `src/app/page.tsx` (agora monta também Cases, Services, HowItWorks)
+  - `.specs/features/landing-page/tasks.md` (status T26-T31, nota de processo em T36)
+  - Nenhuma sobreposição entre arquivos na Phase 5 (cada task tem seus próprios arquivos)
+  - Verificado: `npm run lint`, `npx tsc --noEmit`, `npx vitest run` (14/14, inalterados) e `npm run build` verdes; `npm run dev` + `curl` confirmaram o conteúdo e os 3 `id`s de âncora no HTML gerado
 - **Branch**: `feature/landing-page`

@@ -623,6 +623,8 @@ Import de `DarkSection` removido (o `motion.div` externo replica sua classe `dar
 
 **Post-commit fix (2026-09-27, regras comerciais)**: última linha do terminal trocada de "cobrança liberada após a entrega" para "saldo final na entrega do resultado" - a frase antiga sugeria que nenhuma cobrança acontece antes da entrega, o que conflita com a regra oficial de pagamento (30% de entrada no início, 70% na entrega; ver `context.md` seção "Regras comerciais"). Subheadline também ajustada: "você paga pelo trabalho entregue, não por licença de uso" → "preço fechado, com entrada e saldo na entrega - não uma licença de uso", pela mesma razão (a frase antiga era ambígua sobre o momento do pagamento). `npm run lint`, `npx tsc --noEmit` e `npm run build` verdes.
 
+**Post-commit fix (2026-09-27, ajuste fino pré-Phase 5)**: subheadline reescrita de novo - "com entrada e saldo na entrega" ainda soava como se entrada e saldo fossem ambos pagos na entrega. Nova redação: "preço fechado, 30% de entrada e o saldo na entrega, sem licença de uso" - o valor da entrada (30%) e o momento de cada parcela ficam explícitos.
+
 ---
 
 ### T18: Construir `TechStrip` ✅
@@ -668,6 +670,8 @@ Import de `DarkSection` removido (o `motion.div` externo replica sua classe `dar
 **Gate**: quick - `npm run lint` verde
 **Commit**: `feat(content): add pain points content`
 **Status**: ✅ Complete. 3 pontos de dor amarrados ao modelo OaaS (preço vira licença sem entrega garantida; prazo que estoura por escopo mutável; ninguém dono do resultado pós-entrega) - cada um resolvido implicitamente pela cobrança por entrega/ownership completo da Cron Tech.
+
+**Post-commit fix (2026-09-27, tipografia)**: hífen-pausa → travessão na descrição do 3º item ("Ninguém dono do resultado").
 
 ---
 
@@ -838,9 +842,11 @@ Check B: sem asserção rasa - presença/ausência de `blockquote` por contagem 
 
 **Post-commit fix (2026-09-27, regras comerciais)**: descrição do diferencial "Entrega documentada, sem caixa-preta" ganhou a política de pós-entrega ("30 dias de ajustes sem custo... manutenção é cobrada só se você pedir"), pedida explicitamente pelo usuário. Título do diferencial **não mudou** (só a descrição), e "Preço fechado por entrega, sem hora extra escondida" ficou como estava (usuário pediu para manter). Como os testes verificam os títulos, não as descrições, `differentiators.test.tsx` não precisou de nenhuma alteração - as mesmas 14 asserções continuam passando.
 
+**Post-commit fix (2026-09-27, tipografia)**: hífen usado como pausa (" - ") trocado por travessão (" — ") nas 3 descrições e no separador autor/role do depoimento - regra de estilo do usuário para toda a copy visível do site (hífens de palavra composta e flags de terminal ficam como estão). Testes inalterados (verificam texto que não continha o caractere trocado).
+
 ---
 
-### T26: Criar `src/content/services.ts`
+### T26: Criar `src/content/services.ts` ✅
 
 **What**: 5 serviços (`id`, `name`, `description`, `timeframe`, `whatsappMessage`, `hasShowcaseCases`), sem nenhum valor monetário.
 **Where**: `src/content/services.ts`
@@ -853,18 +859,19 @@ Check B: sem asserção rasa - presença/ausência de `blockquote` por contagem 
 - Skill: NONE
 
 **Done when**:
-- [ ] 5 serviços presentes (Sites e Landing Pages, Sistemas Web & Desktop, Mini ERP, Automações (RPA), Agentes de IA)
-- [ ] Só "Sites e Landing Pages" tem `hasShowcaseCases: true`
-- [ ] Nenhum campo de preço no tipo ou nos dados
-- [ ] `npm run lint` passa
+- [x] 5 serviços presentes (Sites e Landing Pages, Sistemas Web & Desktop, Mini ERP, Automações (RPA), Agentes de IA)
+- [x] Só "Sites e Landing Pages" tem `hasShowcaseCases: true`
+- [x] Nenhum campo de preço no tipo ou nos dados
+- [x] `npm run lint` passa
 
 **Tests**: none
-**Gate**: quick
+**Gate**: quick - `npm run lint` verde
 **Commit**: `feat(content): add services content`
+**Status**: ✅ Complete. Regras comerciais aplicadas desde a primeira escrita (nenhum valor monetário, só prazos indicativos); `whatsappMessage` cita o nome do serviço, usado por `ServicesSection` (T29) via `buildWhatsAppLink(service.whatsappMessage)`.
 
 ---
 
-### T27: Criar `src/content/cases.ts`
+### T27: Criar `src/content/cases.ts` ✅
 
 **What**: 3 cases reais (Performance Motion, Studio Aureum, EvolutionAI) com `demoUrl` real e `imageSrc`/`imageAlt` apontando para `public/cases/` (arquivos já fornecidos: `performance-motion.png`, `studio-aureum.png`, `evolution.png`).
 **Where**: `src/content/cases.ts`
@@ -877,17 +884,18 @@ Check B: sem asserção rasa - presença/ausência de `blockquote` por contagem 
 - Skill: NONE
 
 **Done when**:
-- [ ] 3 cases com `demoUrl` correto (`performance-motion.vercel.app`, `studioaureum.vercel.app`, `evolutionai-virid.vercel.app`)
-- [ ] `imageSrc` aponta exatamente para os arquivos reais em `public/cases/`
-- [ ] `npm run lint` passa
+- [x] 3 cases com `demoUrl` correto (`performance-motion.vercel.app`, `studioaureum.vercel.app`, `evolutionai-virid.vercel.app`)
+- [x] `imageSrc` aponta exatamente para os arquivos reais em `public/cases/`
+- [x] `npm run lint` passa
 
 **Tests**: none
-**Gate**: quick
+**Gate**: quick - `npm run lint` verde
 **Commit**: `feat(content): add real case studies content`
+**Status**: ✅ Complete. `imageSrc` confirmado contra os 3 arquivos reais em `public/cases/` (`performance-motion.png`, `studio-aureum.png`, `evolution.png`, todos ~1890x872px). Descrições curtas e genéricas (ex.: "Site institucional para produtora de conteúdo audiovisual") - sem métrica fabricada, sem depoimento, só o que já era publicamente sabido pelo nome/tipo do projeto.
 
 ---
 
-### T28: Construir `CasesSection`
+### T28: Construir `CasesSection` ✅
 
 **What**: Renderiza os 3 cases reais (nome, descrição, screenshot via `next/image`, botão "Ver demo" com `target="_blank" rel="noopener noreferrer"`) e, para os 4 serviços sem case real, apenas descrição/exemplo ilustrativo (a partir de `services.ts`), sem nome de cliente nem CTA de demo.
 **Where**: `src/components/sections/cases.tsx`
@@ -900,17 +908,18 @@ Check B: sem asserção rasa - presença/ausência de `blockquote` por contagem 
 - Skill: `frontend-design`
 
 **Done when**:
-- [ ] Os 3 "Ver demo" apontam para as URLs reais, `target="_blank"`, `rel="noopener noreferrer"`
-- [ ] As 3 screenshots renderizam via `next/image` com `alt` descritivo
-- [ ] Os outros 4 serviços mostram só descrição/exemplo, sem nome de cliente nem CTA de demo
+- [x] Os 3 "Ver demo" apontam para as URLs reais, `target="_blank"`, `rel="noopener noreferrer"`
+- [x] As 3 screenshots renderizam via `next/image` com `alt` descritivo
+- [x] Os outros 4 serviços mostram só descrição/exemplo, sem nome de cliente nem CTA de demo
 
 **Tests**: none
-**Gate**: quick
+**Gate**: quick - `npm run lint` verde (mais `npx tsc --noEmit` e `npm run build` verdes, integração raiz via `page.tsx`)
 **Commit**: `feat(sections): build cases section with real demo links and screenshots`
+**Status**: ✅ Complete. `id="casos"` (âncora da navbar). Os 4 serviços sem case real (`services.filter(s => !s.hasShowcaseCases)`) reaproveitam `service.description` de `services.ts` (T26) como o "exemplo ilustrativo" exigido - sem novo campo de conteúdo, sem nome de cliente, sem CTA de demo (só título + descrição). `next/image` com dimensões reais das screenshots (945x436, mesma proporção do arquivo original ~1890x872).
 
 ---
 
-### T29: Construir `ServicesSection`
+### T29: Construir `ServicesSection` ✅
 
 **What**: "O que entregamos" - 5 cards/faixas com descrição + prazo indicativo, CTA "Solicitar orçamento" por serviço via `buildWhatsAppLink(service.whatsappMessage)`, sem nenhum valor monetário.
 **Where**: `src/components/sections/services.tsx`
@@ -923,16 +932,17 @@ Check B: sem asserção rasa - presença/ausência de `blockquote` por contagem 
 - Skill: `frontend-design`
 
 **Done when**:
-- [ ] 5 cards renderizam com prazo indicativo, sem preço
-- [ ] Cada CTA "Solicitar orçamento" abre uma URL `wa.me` com mensagem específica do serviço (verificação manual: dois serviços diferentes geram mensagens diferentes)
+- [x] 5 cards renderizam com prazo indicativo, sem preço
+- [x] Cada CTA "Solicitar orçamento" abre uma URL `wa.me` com mensagem específica do serviço (verificação manual: dois serviços diferentes geram mensagens diferentes)
 
 **Tests**: none
-**Gate**: quick
+**Gate**: quick - `npm run lint` verde
 **Commit**: `feat(sections): build services section (sob consulta)`
+**Status**: ✅ Complete. `id="servicos"` (âncora da navbar). Verificação da 2ª linha do Done-when feita por leitura de código + garantia já testada em T7 (`buildWhatsAppLink` tem testes unitários cobrindo o encoding de mensagens arbitrárias) em vez de clique manual em navegador: cada serviço tem seu próprio `whatsappMessage` (string distinta em `services.ts`), então `buildWhatsAppLink(service.whatsappMessage)` produz uma URL com `text=` diferente por construção - não depende de comportamento de runtime não determinístico (ao contrário do foco/animação de T15/T23, que ficaram pendentes para T39).
 
 ---
 
-### T30: Criar `src/content/howItWorks.ts`
+### T30: Criar `src/content/howItWorks.ts` ✅
 
 **What**: Passos da timeline "Como funciona" (do primeiro contato à entrega).
 **Where**: `src/content/howItWorks.ts`
@@ -945,16 +955,17 @@ Check B: sem asserção rasa - presença/ausência de `blockquote` por contagem 
 - Skill: NONE
 
 **Done when**:
-- [ ] ≥3 passos, tipados, em ordem
-- [ ] `npm run lint` passa
+- [x] ≥3 passos, tipados, em ordem
+- [x] `npm run lint` passa
 
 **Tests**: none
-**Gate**: quick
+**Gate**: quick - `npm run lint` verde
 **Commit**: `feat(content): add how-it-works timeline content`
+**Status**: ✅ Complete. 6 passos refletindo o fluxo real pedido pelo usuário: conversa/diagnóstico → proposta com preço fechado → entrada de 30% → desenvolvimento → entrega e saldo de 70% → 30 dias de ajustes inclusos (regras comerciais de `context.md` aplicadas desde a primeira escrita, não como fix posterior).
 
 ---
 
-### T31: Construir `HowItWorksSection`
+### T31: Construir `HowItWorksSection` ✅
 
 **What**: Timeline visual a partir de `howItWorks.ts` (única seção que usa numeração/sequência - é de fato sequencial).
 **Where**: `src/components/sections/how-it-works.tsx`
@@ -967,12 +978,13 @@ Check B: sem asserção rasa - presença/ausência de `blockquote` por contagem 
 - Skill: `frontend-design`
 
 **Done when**:
-- [ ] Todos os passos renderizam em ordem, com indicação visual de sequência
-- [ ] `npm run lint` passa
+- [x] Todos os passos renderizam em ordem, com indicação visual de sequência
+- [x] `npm run lint` passa
 
 **Tests**: none
-**Gate**: quick
+**Gate**: quick - `npm run lint` verde
 **Commit**: `feat(sections): build how-it-works timeline section`
+**Status**: ✅ Complete. `id="como-funciona"` (âncora da navbar). `<ol>` semântico com numeração `01`/`02`/... em mono - única seção do site com numeração sequencial, conforme o princípio de design (dor/serviços/casos não numeram; timeline numera porque é de fato sequencial).
 
 ---
 
@@ -1071,7 +1083,7 @@ Check B: sem asserção rasa - presença/ausência de `blockquote` por contagem 
 
 **What**: `page.tsx` (Server Component) importa e ordena todas as seções (Navbar, Hero, TechStrip, Pain, AudienceFit, DarkTerminal, Differentiators, Cases, Services, HowItWorks, Faq, FinalCta, Footer); `IntroOverlay` é montado uma vez no `layout.tsx`, sobreposto à home.
 
-**Nota de processo (decisão do usuário, Phase 3, 2026-09-27)**: a montagem em `page.tsx`/`layout.tsx` deixou de ser um evento único no fim da feature. A partir da Phase 3, `page.tsx` é atualizado incrementalmente ao fim de cada fase (as seções recém-construídas entram na composição naquele momento, para o usuário revisar visualmente via `npm run dev`) - Navbar+Hero+TechStrip e `IntroOverlay` já foram montados ao fim da Phase 3; Pain+AudienceFit+DarkTerminal+Differentiators ao fim da Phase 4. Esta task (T36) passa a ser a **revisão final** da ordem/composição completa (todas as 13 seções na ordem da referência) e não a primeira montagem - o trabalho real de wiring incremental já foi feito fase a fase.
+**Nota de processo (decisão do usuário, Phase 3, 2026-09-27)**: a montagem em `page.tsx`/`layout.tsx` deixou de ser um evento único no fim da feature. A partir da Phase 3, `page.tsx` é atualizado incrementalmente ao fim de cada fase (as seções recém-construídas entram na composição naquele momento, para o usuário revisar visualmente via `npm run dev`) - Navbar+Hero+TechStrip e `IntroOverlay` já foram montados ao fim da Phase 3; Pain+AudienceFit+DarkTerminal+Differentiators ao fim da Phase 4; Cases+Services+HowItWorks (com os `id`s de âncora `#casos`/`#servicos`/`#como-funciona`, já batendo com `navLinks` de `site.ts`) ao fim da Phase 5. Esta task (T36) passa a ser a **revisão final** da ordem/composição completa (todas as 13 seções na ordem da referência) e não a primeira montagem - o trabalho real de wiring incremental já foi feito fase a fase.
 **Where**: `src/app/page.tsx`
 **Depends on**: T11, T14, T15, T17, T18, T20, T22, T23, T25, T28, T29, T31, T33, T34, T35
 **Reuses**: todos os componentes de seção construídos nas fases 2-6

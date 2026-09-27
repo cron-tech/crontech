@@ -5,6 +5,9 @@ import { PainSection } from "@/components/sections/pain";
 import { AudienceFitSection } from "@/components/sections/audience-fit";
 import { DarkTerminalSection } from "@/components/sections/dark-terminal";
 import { DifferentiatorsSection } from "@/components/sections/differentiators";
+import { CasesSection } from "@/components/sections/cases";
+import { ServicesSection } from "@/components/sections/services";
+import { HowItWorksSection } from "@/components/sections/how-it-works";
 
 export default function Home() {
   return (
@@ -17,6 +20,9 @@ export default function Home() {
         <AudienceFitSection />
         <DarkTerminalSection />
         <DifferentiatorsSection />
+        <CasesSection />
+        <ServicesSection />
+        <HowItWorksSection />
       </main>
     </>
   );
