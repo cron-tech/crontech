@@ -37,15 +37,18 @@
 ## Handoff
 
 - **Feature**: landing-page (`.specs/features/landing-page/`)
-- **Phase / Task**: Execute - Phase 1 (Fundação, T1-T9) e Phase 2 (Intro de entrada, T10-T12) completas, 12 de 40. Phase 1 já commitada pelo usuário (`4d32afa`..`f0bcb9c`, confirmado em `git log`). Phase 2 implementada nesta sessão, ainda não commitada. Aguardando OK do usuário para abrir a Phase 3 (Navegação e Hero).
-- **Completed**: Specify, Design, Tasks (todos aprovados e validados). Execute: T1-T12 implementadas, gate verde em cada uma (ver `tasks.md` para o detalhe por task).
-- **In-progress**: nenhum arquivo em edição
-- **Next step**: com o OK do usuário, iniciar Phase 3 (T13: `src/content/techStack.ts`)
-- **Blockers**: none
+- **Phase / Task**: Execute - Phases 1-3 completas e commitadas pelo usuário (`git log`: `4d32afa`..`7628a06`, incluindo o fix pós-Phase 2 em `b491a25`). Depois disso o usuário pediu 5 ajustes adicionais sobre a Phase 3 (typo "cobranca"→"cobrança" no Hero, texto sr-only do Sheet em pt-BR, CTA na Navbar, desmarcar verificação manual pendente de T15, e montagem incremental de Navbar+Hero+TechStrip+IntroOverlay em `page.tsx`/`layout.tsx`) - implementados nesta sessão, ainda não commitados (fix sugerido). **Sessão pausada aqui a pedido do usuário**: aguardando revisão visual dele via `npm run dev` antes de abrir a Phase 4.
+- **Completed**: Specify, Design, Tasks (todos aprovados e validados). Execute: T1-T18 implementadas, gate verde em cada uma (ver `tasks.md` para o detalhe por task). `page.tsx`/`layout.tsx` já compõem Navbar, Hero, TechStrip e IntroOverlay (montagem incremental - ver nota em T36 no `tasks.md`); as demais 9 seções ainda não existem (Phases 4-6).
+- **In-progress**: nenhum arquivo em edição. **Não iniciar a Phase 4 sem confirmação explícita do usuário** (ele disse que vai revisar visualmente primeiro).
+- **Next step**: com o OK do usuário após a revisão visual, iniciar Phase 4 (T19: `src/content/pain.ts`)
+- **Blockers**: none (bloqueio é de processo - aguardando review do usuário, não um erro técnico)
 - **Uncommitted files** (nenhum commit git foi feito nesta sessão - regra do `CLAUDE.md`, commits são sugeridos e o usuário executa manualmente):
-  - `src/app/layout.tsx` (T10 - script de pré-hidratação + CSS de gate da intro)
-  - `src/components/intro/intro-overlay.tsx`, `src/components/intro/intro-overlay.test.tsx` (T11, com ajuste de T12 no `src` da imagem - ver nota de sobreposição abaixo)
-  - `public/brand/logo-crontech.webp` (novo, T12), `public/brand/logo-crontech.png` (removido, T12)
-  - `.specs/features/landing-page/tasks.md` (status T10-T12), `.specs/STATE.md`
-  - **Sobreposição entre tasks**: `src/components/intro/intro-overlay.tsx` foi criado por T11 e depois só teve a linha `src` da imagem alterada por T12 (troca do PNG pelo WebP). Como a working tree só guarda o estado final do arquivo, recomenda-se um único commit para T11+T12 (ver sugestão de commits abaixo) em vez de tentar separar por task.
-- **Branch**: `feature/landing-page` (branch atual; Phase 1 já commitada nela pelo usuário)
+  - `src/components/sections/hero.tsx` (typo "cobranca"→"cobrança" na 3ª linha do terminal)
+  - `src/components/ui/sheet.tsx` (texto `sr-only` do botão fechar: "Close"→"Fechar menu")
+  - `src/components/layout/navbar.tsx` (CTA pill "Fale com a gente", `hidden md:inline-flex`, à direita da navbar)
+  - `src/app/page.tsx` (agora monta `Navbar`, `Hero`, `TechStrip` - substituiu o boilerplate do `create-next-app`)
+  - `src/app/layout.tsx` (agora monta `IntroOverlay` no `<body>`)
+  - `.specs/features/landing-page/tasks.md` (T3, T14, T15, T17, T36 anotados com os fixes/nota de processo)
+  - Nenhuma sobreposição entre tasks neste lote (cada arquivo corresponde a um fix isolado)
+  - Verificado: `npm run lint`, `npx tsc --noEmit`, `npx vitest run` (12/12) e `npm run build` verdes; `npm run dev` + `curl` na home confirmaram que o HTML gerado contém o conteúdo do Hero/Navbar/IntroOverlay (smoke check só de wiring/SSR - revisão visual de verdade é do usuário)
+- **Branch**: `feature/landing-page` (branch atual; Phases 1-3 e o fix pós-Phase 2 já commitados pelo usuário)

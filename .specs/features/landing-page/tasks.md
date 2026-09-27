@@ -213,6 +213,8 @@ T12 → T40
 **Commit**: `chore(ui): add shadcn sheet primitive`
 **Status**: ✅ Complete
 
+**Post-commit fix (2026-09-27, Phase 3)**: texto `sr-only` do botão de fechar trocado de `"Close"` (padrão gerado pelo shadcn CLI, em inglês) para `"Fechar menu"` - site é pt-BR (LP-07).
+
 ---
 
 ### T4: Reescrever tokens de cor com a paleta Cron Tech ✅
@@ -388,6 +390,8 @@ T12 → T40
 **Commit**: `feat(intro): add pre-hydration script and CSS-hidden overlay gate (AD-001)`
 **Status**: ✅ Complete. Verificado no HTML estático gerado (`.next/server/app/index.html`): `<html>` SSR não carrega `data-intro` (escrito só pelo script no cliente); regra `.intro-overlay{display:none}html[data-intro="show"] .intro-overlay{display:block}` presente no payload. Chave de sessionStorage (`crontech:intro-seen`) documentada no comentário para manter paridade com `IntroOverlay` (T11).
 
+**Post-commit fix (2026-09-27)**: `<html lang="en">` → `<html lang="pt-BR">` (conteúdo do site é em português; item não coberto pelo Done-when original de T10, mas pertence ao mesmo arquivo). Verificado em `npm run build` → `.next/server/app/index.html` com `lang="pt-BR"`.
+
 ---
 
 ### T11: Construir `IntroOverlay` ✅
@@ -437,6 +441,13 @@ Check B: nenhuma asserção rasa (presença/ausência de elemento + valor exato 
 
 **Verdict**: todos os 4 critérios cobertos com evidência `file:line`, outcomes batem com o spec, nenhuma asserção rasa, nenhum teste especulativo.
 
+**Post-commit fix (2026-09-27)**: 4 ajustes sobre o componente já commitado:
+1. **Reapply em Strict Mode (dev)**: `useLayoutEffect(() => { if (shouldPlay) document.documentElement.setAttribute("data-intro","show") }, [shouldPlay])` - cobre o remount único que o React faz em dev (Strict Mode), que limpa `data-intro` do `<html>` (comportamento documentado em `node_modules/next/dist/docs/01-app/02-guides/preventing-flash-before-hydration.md`, seção "Re-applying attributes in development"). No-op em produção.
+2. **Saída com fade**: overlay agora é o filho condicional de `<AnimatePresence>` (era `if (!visible) return null` direto); `exit={{opacity:0}}` com `transition={{duration: prefersReducedMotion ? 0 : 0.4}}` via `useReducedMotion()` do `motion/react` - fade de saída ~0.4s, instantâneo sob reduced-motion.
+3. **Grid sutil**: camada `aria-hidden` com `repeating-linear-gradient` (linhas de 1px a cada 64px, horizontal + vertical) em `var(--brand-lime)` a 12% de opacidade, atrás do glow/logo/texto - referência visual de `docs/references/crontech-ref-home.webp`.
+4. **Logo solta**: removido o container `overflow-hidden rounded-3xl shadow-lg` (existia para conter o fundo cream opaco do PNG antigo); a logo (agora com alfa transparente, ver T12) é exibida direto sobre o fundo escuro/glow.
+Import de `DarkSection` removido (o `motion.div` externo replica sua classe `dark bg-background text-foreground` diretamente, já que `DarkSection` não é um componente `motion`). Regressão verificada: `npm run lint`, `npx tsc --noEmit`, `npx vitest run` (12/12) e `npm run build` verdes.
+
 ---
 
 ### T12: Otimizar asset da logo ✅
@@ -461,9 +472,13 @@ Check B: nenhuma asserção rasa (presença/ausência de elemento + valor exato 
 **Commit**: `perf(brand): optimize logo asset to WebP for intro`
 **Status**: ✅ Complete. `public/brand/logo-crontech.png` (1024x1024, 1.059.520 bytes) redimensionado para 256x256 e convertido via `sharp` (`webp quality:82`) → `public/brand/logo-crontech.webp`, 1.516 bytes (1,5 KB, muito abaixo do limite de 150 KB). Nenhuma outra referência ao PNG restava no código (`grep` em `src/`/`public/`) - PNG original removido do repo. `IntroOverlay` (T11) já usava `next/image` com `width={96} height={96}`; só o `src` foi trocado para o novo `.webp`. SVG vetorial não estava disponível (fora de escopo desta task, conforme `design.md`).
 
+**Post-commit fix (2026-09-27)**: fonte trocada. O usuário adicionou `docs/brand/logo-crontech.png` (500x500, canal alfa/fundo transparente, commit `43f99b6`) como a logo de alta resolução correta - a versão anterior em `public/brand/` tinha fundo cream opaco. `public/brand/logo-crontech.webp` foi regenerado a partir dessa nova fonte: `sharp(...).resize(512, 512).webp({ quality: 82, alphaQuality: 100 })` (script temporário na raiz do projeto, apagado após rodar) → 6.660 bytes (6,5 KB), `hasAlpha: true` confirmado via `sharp(...).metadata()`. `IntroOverlay` (T11) ajustado para exibir a logo solta (ver nota de fix em T11, item 4) já que o fundo agora é transparente.
+
+**Fonte da logo (registro para tasks futuras)**: `docs/brand/logo-crontech.png` é a fonte em alta resolução com fundo transparente - usar essa como origem para qualquer novo asset derivado (favicon, Open Graph image, navbar, etc.), não o `public/brand/logo-crontech.webp` (já um derivado otimizado para a intro). Ver nota em T38.
+
 ---
 
-### T13: Criar `src/content/techStack.ts`
+### T13: Criar `src/content/techStack.ts` ✅
 
 **What**: Lista tipada da stack real do projeto (Next.js, TypeScript, React, Tailwind, shadcn/ui) para a `TechStrip`.
 **Where**: `src/content/techStack.ts`
@@ -476,16 +491,17 @@ Check B: nenhuma asserção rasa (presença/ausência de elemento + valor exato 
 - Skill: NONE
 
 **Done when**:
-- [ ] Array tipado exportado com pelo menos 5 itens (nome + ícone/label)
-- [ ] `npm run lint` passa
+- [x] Array tipado exportado com pelo menos 5 itens (nome + ícone/label)
+- [x] `npm run lint` passa
 
 **Tests**: none
-**Gate**: quick
+**Gate**: quick - `npm run lint` verde
 **Commit**: `feat(content): add tech stack list`
+**Status**: ✅ Complete. 5 itens (Next.js, TypeScript, React, Tailwind CSS, shadcn/ui). `lucide-react` não tem logos de marca para essas techs, então "ícone" foi interpretado como um `label` curto em estilo mono/terminal (ex.: `next`, `ts`) em vez de um ícone SVG - consistente com o motivo "terminal" do design system (sem inventar assets de logo de terceiros).
 
 ---
 
-### T14: Construir `Navbar`
+### T14: Construir `Navbar` ✅
 
 **What**: Navbar em pill, sticky/fixa no topo, com leve blur, usando `navLinks` de `site.ts` e a logo otimizada (T12).
 **Where**: `src/components/layout/navbar.tsx`
@@ -498,17 +514,20 @@ Check B: nenhuma asserção rasa (presença/ausência de elemento + valor exato 
 - Skill: `frontend-design`
 
 **Done when**:
-- [ ] Navbar renderiza pill, fixa no topo, com os links de `navLinks`
-- [ ] Logo renderiza via `next/image`
-- [ ] `npm run lint` passa
+- [x] Navbar renderiza pill, fixa no topo, com os links de `navLinks`
+- [x] Logo renderiza via `next/image`
+- [x] `npm run lint` passa
 
 **Tests**: none
-**Gate**: quick
+**Gate**: quick - `npm run lint` verde
 **Commit**: `feat(nav): build pill navbar`
+**Status**: ✅ Complete. `<header>` `fixed` (não apenas `sticky`) para flutuar sobre o hero desde o primeiro frame, `z-40` (abaixo do `z-50` do `IntroOverlay`). Links desktop `hidden md:flex`; trigger mobile vem de `MobileMenu` (T15, mesmo arquivo - ver nota de sobreposição em T15).
+
+**Post-commit fix (2026-09-27, Phase 3)**: adicionado CTA compacto em pill ("Fale com a gente", `buildWhatsAppLink()`, `target="_blank" rel="noopener noreferrer"`) à direita da navbar, `hidden md:inline-flex` (só desktop) - segue o botão verde da navbar na referência Chiarelli (`docs/references/chiarelli-ref.png`). `rounded-full` via `className` sobrescreve o `rounded-lg` padrão do `Button` (merge por `cn`/tailwind-merge, mesma técnica já usada em outros componentes). Não conflita com o CTA do Hero (T17): aparecem em breakpoints/posições diferentes, ambos abrindo o mesmo WhatsApp com a mensagem default.
 
 ---
 
-### T15: Construir `MobileMenu`
+### T15: Construir `MobileMenu` ⚠️
 
 **What**: Menu mobile acessível usando shadcn `Sheet`, aberto por um botão hambúrguer na `Navbar`, navegável por teclado (`Esc` fecha, foco preso dentro do painel).
 **Where**: `src/components/layout/mobile-menu.tsx`
@@ -521,17 +540,18 @@ Check B: nenhuma asserção rasa (presença/ausência de elemento + valor exato 
 - Skill: `frontend-design`
 
 **Done when**:
-- [ ] Abaixo de 768px, o menu colapsa para o botão hambúrguer + `Sheet`
-- [ ] Verificação manual: `Tab`/`Shift+Tab` circulam dentro do painel aberto; `Esc` fecha
-- [ ] `npm run lint` passa
+- [x] Abaixo de 768px, o menu colapsa para o botão hambúrguer + `Sheet`
+- [ ] Verificação manual: `Tab`/`Shift+Tab` circulam dentro do painel aberto; `Esc` fecha - **pendente**: menu ainda não testado em navegador; verificar em T39 (QA de acessibilidade), quando a página já estiver composta e navegável
+- [x] `npm run lint` passa
 
 **Tests**: none
-**Gate**: quick
+**Gate**: quick - `npm run lint` verde
 **Commit**: `feat(nav): add accessible mobile menu via shadcn sheet`
+**Status**: ⚠️ Partial. Código completo (trigger `Button` ícone `Menu`, `aria-label="Abrir menu"`, `md:hidden`, inserido na `Navbar` (T14) - arquivo compartilhado entre as duas tasks, ver sobreposição sinalizada no relatório de fase; `SheetTitle` presente porém `sr-only`, já que Radix `Dialog.Content` exige um título acessível). Foco preso + `Esc` fecha são comportamento *default* do `Dialog` do Radix por baixo do `Sheet` (T3) - não código nosso - mas a verificação manual em navegador real ainda não foi feita (menu nunca foi aberto num `npm run dev`); adiada explicitamente para T39 (QA de acessibilidade), quando a página já estiver composta e navegável via `page.tsx`.
 
 ---
 
-### T16: Construir `TerminalWindow`
+### T16: Construir `TerminalWindow` ✅
 
 **What**: Componente reutilizável de "janela de terminal" (chrome + linhas de conteúdo), com variante `animated` (digitação via `motion`, respeitando `prefers-reduced-motion` internamente) e variante estática.
 **Where**: `src/components/ui/terminal-window.tsx`
@@ -544,18 +564,19 @@ Check B: nenhuma asserção rasa (presença/ausência de elemento + valor exato 
 - Skill: `frontend-design`
 
 **Done when**:
-- [ ] `animated={false}` (ou reduced-motion ativo) renderiza o texto final direto, sem frames de animação
-- [ ] `animated={true}` digita as linhas com `motion`, uma vez
-- [ ] Raio de borda pequeno/zero (evoca chrome de terminal real, não o kit de card padrão)
-- [ ] `npm run lint` passa
+- [x] `animated={false}` (ou reduced-motion ativo) renderiza o texto final direto, sem frames de animação
+- [x] `animated={true}` digita as linhas com `motion`, uma vez
+- [x] Raio de borda pequeno/zero (evoca chrome de terminal real, não o kit de card padrão)
+- [x] `npm run lint` passa
 
 **Tests**: none
-**Gate**: quick
+**Gate**: quick - `npm run lint` verde
 **Commit**: `feat(ui): add reusable TerminalWindow component`
+**Status**: ✅ Complete. Chrome fixo em `var(--brand-dark)`/`var(--brand-cream)` (não `bg-background/text-foreground`) - um terminal real é sempre escuro, independente do tema ambiente (usado tanto no Hero claro quanto na `DarkTerminalSection`, T23). `rounded-sm` (2px). Reduced-motion checado via `useReducedMotion()` (`motion/react`), mesma técnica já usada em `IntroOverlay` (T11) - `animated` só tem efeito quando reduced-motion está desligado. Digitação: delay acumulado por caractere (linha inteira, incluindo o prefixo `"$ "` que o próprio componente adiciona), sem repetição (roda uma vez ao montar, sem loop).
 
 ---
 
-### T17: Construir `Hero`
+### T17: Construir `Hero` ✅
 
 **What**: Seção hero com headline (Newsreader) comunicando a proposta OaaS ("a Cron Tech entrega o resultado pronto e cobra pelo trabalho entregue, não por licença de uso"), `TerminalWindow` mini, e CTA principal via `buildWhatsAppLink()`.
 **Where**: `src/components/sections/hero.tsx`
@@ -568,17 +589,20 @@ Check B: nenhuma asserção rasa (presença/ausência de elemento + valor exato 
 - Skill: `frontend-design`
 
 **Done when**:
-- [ ] Headline usa a proposta de valor correta (sem a frase "você grava...")
-- [ ] CTA principal abre `buildWhatsAppLink()` com mensagem de primeiro contato
-- [ ] `npm run lint` passa
+- [x] Headline usa a proposta de valor correta (sem a frase "você grava...")
+- [x] CTA principal abre `buildWhatsAppLink()` com mensagem de primeiro contato
+- [x] `npm run lint` passa
 
 **Tests**: none
-**Gate**: quick
+**Gate**: quick - `npm run lint` verde
 **Commit**: `feat(hero): build hero section with terminal card and whatsapp CTA`
+**Status**: ✅ Complete. Headline: "Você entrega o problema. A Cron Tech entrega o resultado pronto." (framing de `[[business_model_crontech]]`/memória do usuário: "you hand off the problem, Cron Tech delivers the finished outcome"); subheadline cita o modelo Outcome as a Service e "paga pelo trabalho entregue, não por licença de uso" (frase de `context.md`), sem a frase removida da referência Chiarelli. CTA usa `buildWhatsAppLink()` sem argumento (mensagem default já é de primeiro contato: "Olá! Quero saber mais sobre os serviços da Cron Tech."), `target="_blank" rel="noopener noreferrer"`. `TerminalWindow` mini (`animated`) com linhas que reforçam a proposta OaaS (entrega → cobrança liberada após a entrega).
+
+**Post-commit fix (2026-09-27, Phase 3)**: erro de digitação corrigido na 3ª linha do terminal - "cobranca" → "cobrança".
 
 ---
 
-### T18: Construir `TechStrip`
+### T18: Construir `TechStrip` ✅
 
 **What**: Faixa de tecnologias logo após o hero, a partir de `techStack.ts`.
 **Where**: `src/components/sections/tech-strip.tsx`
@@ -591,12 +615,13 @@ Check B: nenhuma asserção rasa (presença/ausência de elemento + valor exato 
 - Skill: `frontend-design`
 
 **Done when**:
-- [ ] Todos os itens de `techStack.ts` renderizam
-- [ ] `npm run lint` passa
+- [x] Todos os itens de `techStack.ts` renderizam
+- [x] `npm run lint` passa
 
 **Tests**: none
-**Gate**: quick
+**Gate**: quick - `npm run lint` verde
 **Commit**: `feat(sections): build tech strip section`
+**Status**: ✅ Complete. Faixa `bg-muted` (token semântico, resolve para `--cream-muted` no tema claro - `bg-cream-muted` não existe como utilitário Tailwind, já que só os tokens semânticos estão mapeados em `@theme inline`) com os 5 `label`s de `techStack.ts` em mono, `title` com o `name` completo por acessibilidade/hover.
 
 ---
 
@@ -988,6 +1013,8 @@ Check B: nenhuma asserção rasa (presença/ausência de elemento + valor exato 
 ### T36: Compor `page.tsx` e montar `IntroOverlay` no `layout`
 
 **What**: `page.tsx` (Server Component) importa e ordena todas as seções (Navbar, Hero, TechStrip, Pain, AudienceFit, DarkTerminal, Differentiators, Cases, Services, HowItWorks, Faq, FinalCta, Footer); `IntroOverlay` é montado uma vez no `layout.tsx`, sobreposto à home.
+
+**Nota de processo (decisão do usuário, Phase 3, 2026-09-27)**: a montagem em `page.tsx`/`layout.tsx` deixou de ser um evento único no fim da feature. A partir da Phase 3, `page.tsx` é atualizado incrementalmente ao fim de cada fase (as seções recém-construídas entram na composição naquele momento, para o usuário revisar visualmente via `npm run dev`) - Navbar+Hero+TechStrip e `IntroOverlay` já foram montados ao fim da Phase 3. Esta task (T36) passa a ser a **revisão final** da ordem/composição completa (todas as 13 seções na ordem da referência) e não a primeira montagem - o trabalho real de wiring incremental já foi feito fase a fase.
 **Where**: `src/app/page.tsx`
 **Depends on**: T11, T14, T15, T17, T18, T20, T22, T23, T25, T28, T29, T31, T33, T34, T35
 **Reuses**: todos os componentes de seção construídos nas fases 2-6
@@ -1037,7 +1064,7 @@ Check B: nenhuma asserção rasa (presença/ausência de elemento + valor exato 
 **What**: `generateMetadata`/`metadata` por rota (title/description reais da Cron Tech), Open Graph + Twitter Card com imagem de preview, `sitemap.xml`, `robots.txt`, `metadataBase` usando `site.ts.productionUrl` (placeholder `TODO`).
 **Where**: `src/app/layout.tsx`, `src/app/sitemap.ts`, `src/app/robots.ts`
 **Depends on**: T36, T6
-**Reuses**: `src/content/site.ts`
+**Reuses**: `src/content/site.ts`; `docs/brand/logo-crontech.png` (fonte em alta resolução com fundo transparente - registrada em T12 - como origem para gerar a imagem de OG/Twitter Card e, se necessário, um favicon atualizado; não usar `public/brand/logo-crontech.webp` diretamente, que já é um derivado otimizado para o tamanho da intro)
 **Requirement**: LP-07 AC6
 
 **Tools**:

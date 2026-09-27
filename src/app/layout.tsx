@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Newsreader } from "next/font/google";
+import { IntroOverlay } from "@/components/intro/intro-overlay";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -42,7 +43,10 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         {/* Hidden by default so the overlay never appears without JS; only html[data-intro="show"] reveals it. */}
         <style>{`.intro-overlay{display:none}html[data-intro="show"] .intro-overlay{display:block}`}</style>
       </head>
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-full flex flex-col">
+        <IntroOverlay />
+        {children}
+      </body>
     </html>
   );
 }
