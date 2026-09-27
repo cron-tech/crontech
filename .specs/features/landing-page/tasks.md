@@ -461,6 +461,8 @@ Import de `DarkSection` removido (o `motion.div` externo replica sua classe `dar
 
 **Post-commit fix (2026-09-27, revisão visual #2)**: usuário encontrou a lista de serviços do canto superior direito cruzando a linha-guia superior e o pontinho da moldura na altura de "automações". Corrigido com duas mudanças combinadas (não só uma): `FRAME_Y[0]` de `18` para `22` (mais distância entre o topo e a linha-guia superior - a moldura fica levemente assimétrica de propósito, já que a lista de 5 itens no topo é mais alta que o texto de 2 linhas embaixo) e a lista com `gap-0.5` (era `gap-1`) + `leading-tight` (era o padrão do `text-sm`), reduzindo sua altura total. Nenhuma linha/pontinho sobreposto pela lista depois da mudança.
 
+**Post-commit fix (2026-09-27, regras comerciais)**: texto do canto inferior esquerdo trocado de "resultado pronto, / cobrado pela *entrega*." para "resultado pronto, / preço *fechado*." (itálico em `var(--brand-lime)` mantido, só a palavra mudou) - a versão antiga sugeria que a cobrança só acontece na entrega, o que conflita com a regra oficial de pagamento (30% de entrada no início). Ver `context.md` seção "Regras comerciais". Os 4 testes RTL de `IntroOverlay` não verificam esse texto (são `aria-hidden`, fora do escopo de teste do componente) - continuam passando sem alteração.
+
 ---
 
 ### T12: Otimizar asset da logo ✅
@@ -619,6 +621,8 @@ Import de `DarkSection` removido (o `motion.div` externo replica sua classe `dar
 
 **Post-commit fix (2026-09-27, revisão visual #2)**: `max-w-xl` revertido para `max-w-sm` (decisão do usuário - o pedido original era só mudar o conteúdo das linhas, não a largura do card; `max-w-xl` espremia a headline no layout de duas colunas). As linhas novas cabem em `max-w-sm` sem quebrar (linha mais longa, a 2ª continuação com o prefixo de 4 espaços, tem 35 caracteres).
 
+**Post-commit fix (2026-09-27, regras comerciais)**: última linha do terminal trocada de "cobrança liberada após a entrega" para "saldo final na entrega do resultado" - a frase antiga sugeria que nenhuma cobrança acontece antes da entrega, o que conflita com a regra oficial de pagamento (30% de entrada no início, 70% na entrega; ver `context.md` seção "Regras comerciais"). Subheadline também ajustada: "você paga pelo trabalho entregue, não por licença de uso" → "preço fechado, com entrada e saldo na entrega - não uma licença de uso", pela mesma razão (a frase antiga era ambígua sobre o momento do pagamento). `npm run lint`, `npx tsc --noEmit` e `npm run build` verdes.
+
 ---
 
 ### T18: Construir `TechStrip` ✅
@@ -757,7 +761,9 @@ Import de `DarkSection` removido (o `motion.div` externo replica sua classe `dar
 **Tests**: none
 **Gate**: quick - `npm run lint` verde
 **Commit**: `feat(sections): build dark terminal section`
-**Status**: ⚠️ Partial (mesma situação de T15: código completo, 1 verificação manual em navegador adiada para T39). `TerminalWindow` (T16) reutilizado sem alteração - `animated` mais `useReducedMotion()` interno já cobre o requisito, só falta confirmar visualmente. Copy: "Você recebe o projeto pronto. A cobrança só chega depois da entrega." + terminal com 5 linhas (`deploy` → `build`/`testes` sucesso → `deploy: produção` → `fatura: emitida após a entrega, não antes`) - reforça a proposta OaaS sem repetir literalmente a frase do Hero.
+**Status**: ⚠️ Partial (mesma situação de T15: código completo, 1 verificação manual em navegador adiada para T39). `TerminalWindow` (T16) reutilizado sem alteração - `animated` mais `useReducedMotion()` interno já cobre o requisito, só falta confirmar visualmente. Copy original: "Você recebe o projeto pronto. A cobrança só chega depois da entrega." + terminal com 5 linhas (`deploy` → `build`/`testes` sucesso → `deploy: produção` → `fatura: emitida após a entrega, não antes`) - substituída no fix abaixo.
+
+**Post-commit fix (2026-09-27, regras comerciais)**: título e terminal reescritos - a copy original violava a regra oficial de pagamento (sugeria cobrança só na entrega; na verdade há 30% de entrada no início). Título novo: "Preço fechado antes de começar. 30% na entrada, o restante na entrega." Terminal (7 linhas, conteúdo exato pedido pelo usuário): `cron-tech iniciar --projeto sistema-sob-medida` → `proposta: preço fechado aprovado` → `entrada: 30% confirmada` → `build: sucesso · testes: sucesso` → `deploy: produção` → `saldo: 70% na entrega do resultado` → `suporte: 30 dias de ajustes inclusos`. Ver `context.md` seção "Regras comerciais". `npm run lint`, `npx tsc --noEmit` e `npm run build` verdes.
 
 ---
 
@@ -829,6 +835,8 @@ Import de `DarkSection` removido (o `motion.div` externo replica sua classe `dar
 Check B: sem asserção rasa - presença/ausência de `blockquote` por contagem exata (`toHaveLength`), não só "não lança erro"; texto exato de cada título/quote verificado, não só a existência de algum elemento. Check D: segue o padrão RTL do projeto (`src/components/**/*.test.tsx`, `npx vitest run`).
 
 **Verdict**: os 3 critérios cobertos com evidência `file:line`, outcomes batem com o spec (LP-03 AC4/AC5/AC6), nenhuma asserção rasa, nenhum teste especulativo.
+
+**Post-commit fix (2026-09-27, regras comerciais)**: descrição do diferencial "Entrega documentada, sem caixa-preta" ganhou a política de pós-entrega ("30 dias de ajustes sem custo... manutenção é cobrada só se você pedir"), pedida explicitamente pelo usuário. Título do diferencial **não mudou** (só a descrição), e "Preço fechado por entrega, sem hora extra escondida" ficou como estava (usuário pediu para manter). Como os testes verificam os títulos, não as descrições, `differentiators.test.tsx` não precisou de nenhuma alteração - as mesmas 14 asserções continuam passando.
 
 ---
 

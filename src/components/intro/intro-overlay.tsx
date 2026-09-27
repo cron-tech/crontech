@@ -228,9 +228,9 @@ export function IntroOverlay() {
           >
             resultado pronto,
             <br />
-            cobrado pela{" "}
+            preço{" "}
             <em className="italic" style={{ color: "var(--brand-lime)" }}>
-              entrega
+              fechado
             </em>
             .
           </p>

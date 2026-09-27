@@ -17,6 +17,6 @@ export const painPoints: PainPoint[] = [
   {
     title: "Ninguém dono do resultado",
     description:
-      "Depois da entrega técnica, suporte e ajustes ficam por sua conta - ninguém responde pelo produto rodando de verdade.",
+      "Depois da entrega técnica, suporte e ajustes ficam por sua conta — ninguém responde pelo produto rodando de verdade.",
   },
 ];

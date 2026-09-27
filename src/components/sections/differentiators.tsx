@@ -7,17 +7,17 @@ const DIFFERENTIATORS = [
   {
     title: "Você fala com quem constrói",
     description:
-      "Sem camada de account manager repassando pedido - quem entende o projeto é quem responde.",
+      "Sem camada de account manager repassando pedido — quem entende o projeto é quem responde.",
   },
   {
     title: "Entrega documentada, sem caixa-preta",
     description:
-      "Código, decisões e acessos ficam com você, prontos para qualquer time dar continuidade.",
+      "Código, decisões e acessos ficam com você. Depois da entrega, são 30 dias de ajustes sem custo — passado esse prazo, manutenção é cobrada só se você pedir.",
   },
   {
     title: "Preço fechado por entrega, sem hora extra escondida",
     description:
-      "Você sabe o que vai pagar antes de começar - o risco de estouro de escopo é nosso, não seu.",
+      "Você sabe o que vai pagar antes de começar — o risco de estouro de escopo é nosso, não seu.",
   },
 ];
 
@@ -55,7 +55,7 @@ export function DifferentiatorsSection({
                   {testimonial.quote}
                 </p>
                 <footer className="mt-4 text-sm text-muted-foreground">
-                  {testimonial.author} - {testimonial.role}
+                  {testimonial.author} — {testimonial.role}
                 </footer>
               </blockquote>
             ))}

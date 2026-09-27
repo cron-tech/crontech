@@ -10,7 +10,7 @@ const HERO_TERMINAL_LINES: TerminalLine[] = [
   { text: "--sites --sistemas-sob-medida \\", prompt: false },
   { text: "--automacoes --agentes-ia", prompt: false },
   { text: "aguardando aprovação do cliente" },
-  { text: "cobrança liberada após a entrega" },
+  { text: "saldo final na entrega do resultado" },
 ];
 
 export function Hero() {
@@ -26,8 +26,8 @@ export function Hero() {
           </h1>
           <p className="mt-6 text-lg text-muted-foreground">
             Sites, sistemas, automações e agentes de IA sob o modelo Outcome
-            as a Service: você paga pelo trabalho entregue, não por licença
-            de uso.
+            as a Service: preço fechado, 30% de entrada e o saldo na
+            entrega, sem licença de uso.
           </p>
           <Button asChild size="lg" className="mt-8">
             <a

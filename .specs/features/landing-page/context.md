@@ -22,9 +22,10 @@ Landing page institucional da Cron Tech em pt-BR, seguindo a estrutura visual da
 
 ### Exibição de preços
 
-- Modelo "sob consulta": nenhum valor numérico público.
+- Modelo "sob consulta": nenhum valor **monetário** público (sem R$, sem faixas de preço).
 - Cada card de serviço em "O que entregamos" tem CTA "Solicitar orçamento" → abre WhatsApp com mensagem pré-preenchida mencionando o serviço específico.
 - Prazos (ex.: "X a Y dias") podem ser exibidos como indicativo de processo, mas não como preço.
+- Percentuais da estrutura de pagamento (30%/70%, ver "Regras comerciais" abaixo) **podem** aparecer - não são valor monetário, são a forma de pagamento.
 
 ### Programa de indicação
 
@@ -34,6 +35,7 @@ Landing page institucional da Cron Tech em pt-BR, seguindo a estrutura visual da
 
 - Removida a frase "você grava o problema / você grava, a Cron Tech entrega" — vinha da referência Chiarelli e não se aplica à Cron Tech.
 - Proposta correta a usar em Problem Statement e no bloco de terminal escuro: "a Cron Tech entrega o resultado pronto e cobra pelo trabalho entregue, não por licença de uso."
+- **Atualizado em 2026-09-27**: esta frase contrasta a *base* da cobrança (por trabalho entregue, não por licença) e continua válida - mas não define *quando* o cliente paga. Ver "Regras comerciais" abaixo para o cronograma de pagamento (30% entrada / 70% entrega); nenhuma copy pode implicar que o pagamento inteiro só acontece depois da entrega.
 
 ### Fundador
 
@@ -79,6 +81,20 @@ Os itens abaixo não foram discutidos nesta rodada (dados puros, não decisões 
 
 - Domínio de produção (para `metadataBase`, canonical URL e Open Graph) — mantido como `TODO` a pedido explícito do usuário
 - Ferramenta de analytics (se alguma) — assumido "nenhuma na v1" por não ter sido solicitada
+
+---
+
+## Regras comerciais
+
+Regras oficiais do modelo de negócio da Cron Tech, definidas pelo usuário em 2026-09-27 (depois da Phase 4 já aprovada visualmente). Valem para **toda** copy do site — o que já foi escrito (Hero, intro, seções de prova) e o que ainda falta escrever (Phases 5-6: Serviços, Como funciona, FAQ).
+
+- **Serviços**: sites, sistemas sob medida, automações e agentes de IA, todos sob o modelo OaaS (Outcome as a Service).
+- **Preço**: fechado antes de o projeto começar; o risco de estouro de escopo é da Cron Tech, não do cliente.
+- **Pagamento**: 30% de entrada no início do projeto, 70% na entrega do resultado. À vista ou parcelado.
+- **Propriedade**: código, decisões técnicas e acessos ficam com o cliente.
+- **Pós-entrega**: 30 dias de ajustes sem custo após a entrega. Depois desse prazo, manutenção é cobrada à parte, e só quando o cliente solicitar.
+
+**Regra de copy (a mais importante para revisão)**: nenhum texto do site pode sugerir que não há cobrança antes da entrega — existe uma entrada de 30% no início. A formulação correta é "preço fechado, entrada + saldo na entrega", nunca "você só paga depois de tudo pronto". Copy sempre objetiva e sem ambiguidade sobre quando o cliente paga.
 
 ---
 
