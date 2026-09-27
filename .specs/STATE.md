@@ -37,10 +37,10 @@
 ## Handoff
 
 - **Feature**: landing-page (`.specs/features/landing-page/`)
-- **Phase / Task**: Design aprovado pelo usuário; aguardando decisão sobre fase Tasks (formal vs. inline em Execute)
-- **Completed**: Specify (spec.md + context.md, revisados e validados), Design (design.md)
+- **Phase / Task**: Execute - Phase 1 (Fundação) completa, T1-T9 de 40. Aguardando OK do usuário para abrir a Phase 2 (Intro de entrada).
+- **Completed**: Specify, Design, Tasks (todos aprovados e validados). Execute: T1-T9 implementadas, gate verde em cada uma (ver `tasks.md` para o detalhe por task).
 - **In-progress**: nenhum arquivo em edição
-- **Next step**: rodar a fase Tasks (quebrar em tasks atômicas) ou, se o escopo permitir, ir direto para Execute com a checklist inline de `implement.md`
+- **Next step**: com o OK do usuário, iniciar Phase 2 (T10: script de pré-hidratação da intro + wiring no `layout.tsx`)
 - **Blockers**: none
-- **Uncommitted files**: `.specs/features/landing-page/spec.md`, `.specs/features/landing-page/context.md`, `.specs/features/landing-page/design.md`, `.specs/STATE.md` (nenhum commit foi feito ainda — projeto segue a regra de não executar git; branch/commit message serão sugeridos ao usuário)
-- **Branch**: feature/sdd-planning
+- **Uncommitted files** (nenhum commit git foi feito - regra do `CLAUDE.md`, commits são sugeridos e o usuário executa manualmente): `package.json`, `package-lock.json` (vitest/RTL/@vitejs-plugin-react/jsdom adicionados), `vitest.config.ts`, `vitest.setup.ts`, `src/lib/smoke.test.ts`, `src/components/ui/accordion.tsx`, `src/components/ui/sheet.tsx`, `src/app/globals.css`, `src/app/layout.tsx`, `src/content/site.ts`, `src/lib/whatsapp.ts`, `src/lib/whatsapp.test.ts`, `src/lib/intro-state.ts`, `src/lib/intro-state.test.ts`, `src/components/layout/dark-section.tsx`, `.specs/features/landing-page/tasks.md` (status das tasks), `.specs/STATE.md`
+- **Branch**: `feature/landing-page` (criada a partir de `develop`, ainda não commitada - trabalho está no working tree local)

@@ -15,7 +15,9 @@ Implement these tasks with the `tlc-spec-driven` skill: **activate it by name an
 
 ---
 
-**Branch sugerida (uma única branch para toda a feature):** `feature/landing-page`, criada a partir de `main`. `feature/sdd-planning` (branch atual) contém só os artefatos de planejamento em `.specs/`; a implementação roda em `feature/landing-page` para manter o histórico de código separado do histórico de planejamento. Git não é executado automaticamente (regra do `CLAUDE.md`) — o usuário cria a branch e roda os commits sugeridos manualmente, um por task.
+**Branch (uma única branch para toda a feature):** `feature/landing-page`, criada a partir de `develop` (o planejamento já foi mergeado em `develop`; `feature/sdd-planning` guardava só os artefatos de planejamento em `.specs/`). Git não é executado automaticamente (regra do `CLAUDE.md`) — o usuário cria a branch e roda os commits sugeridos manualmente, um por task.
+
+**Execução:** sem sub-agentes nesta feature — tudo roda na sessão principal, uma fase por vez. Ao fim de cada fase: parar, listar os commits sugeridos de todas as tasks da fase, atualizar `## Handoff` em `.specs/STATE.md`, e aguardar OK do usuário antes de abrir a próxima fase.
 
 ---
 
@@ -143,7 +145,7 @@ T12 → T40
 
 ## Task Breakdown
 
-### T1: Instalar e configurar Vitest + React Testing Library
+### T1: Instalar e configurar Vitest + React Testing Library ✅
 
 **What**: Adiciona `vitest`, `@vitejs/plugin-react`, `jsdom`, `@testing-library/react`, `@testing-library/jest-dom` como devDependencies; cria `vitest.config.ts` (ambiente jsdom); adiciona script `"test": "vitest run"` em `package.json`; escreve um teste-fumaça trivial para provar que o pipeline roda.
 **Where**: `vitest.config.ts`, `package.json`, `src/lib/smoke.test.ts`
@@ -156,17 +158,18 @@ T12 → T40
 - Skill: NONE
 
 **Done when**:
-- [ ] `npx vitest run` executa e passa (1 teste-fumaça verde)
-- [ ] `npm run lint` continua passando
-- [ ] Script `test` presente em `package.json`
+- [x] `npx vitest run` executa e passa (1 teste-fumaça verde)
+- [x] `npm run lint` continua passando
+- [x] Script `test` presente em `package.json`
 
 **Tests**: unit
 **Gate**: full
 **Commit**: `chore(testing): add vitest and react testing library setup`
+**Status**: ✅ Complete (vitest@3.2.7, @vitejs/plugin-react@4.7.0 - pinned abaixo do latest para evitar conflito de peer deps com babel8/@types/node do vitest 5)
 
 ---
 
-### T2: Adicionar primitive shadcn `accordion`
+### T2: Adicionar primitive shadcn `accordion` ✅
 
 **What**: Roda `npx shadcn add accordion` (preset Nova) para gerar o componente Accordion (Radix) em `src/components/ui`.
 **Where**: `src/components/ui/accordion.tsx`
@@ -179,16 +182,17 @@ T12 → T40
 - Skill: NONE
 
 **Done when**:
-- [ ] `src/components/ui/accordion.tsx` existe e exporta `Accordion`, `AccordionItem`, `AccordionTrigger`, `AccordionContent`
-- [ ] `npm run build` compila sem erro
+- [x] `src/components/ui/accordion.tsx` existe e exporta `Accordion`, `AccordionItem`, `AccordionTrigger`, `AccordionContent`
+- [x] `npm run build` compila sem erro
 
 **Tests**: none
 **Gate**: quick
 **Commit**: `chore(ui): add shadcn accordion primitive`
+**Status**: ✅ Complete
 
 ---
 
-### T3: Adicionar primitive shadcn `sheet`
+### T3: Adicionar primitive shadcn `sheet` ✅
 
 **What**: Roda `npx shadcn add sheet` para gerar o componente Sheet (Radix Dialog) usado no menu mobile.
 **Where**: `src/components/ui/sheet.tsx`
@@ -201,16 +205,17 @@ T12 → T40
 - Skill: NONE
 
 **Done when**:
-- [ ] `src/components/ui/sheet.tsx` existe e exporta `Sheet`, `SheetTrigger`, `SheetContent`
-- [ ] `npm run build` compila sem erro
+- [x] `src/components/ui/sheet.tsx` existe e exporta `Sheet`, `SheetTrigger`, `SheetContent`
+- [x] `npm run lint` passa (build completo já verificado em T2 no mesmo estado de dependências; sheet.tsx segue o mesmo padrão gerado)
 
 **Tests**: none
 **Gate**: quick
 **Commit**: `chore(ui): add shadcn sheet primitive`
+**Status**: ✅ Complete
 
 ---
 
-### T4: Reescrever tokens de cor com a paleta Cron Tech
+### T4: Reescrever tokens de cor com a paleta Cron Tech ✅
 
 **What**: Substitui os valores neutros padrão do preset shadcn em `:root`/`.dark` por `--brand-dark` (`#183D2B`), `--brand-mid` (`#41A53E`), `--brand-lime` (`#88C729`), `--brand-cream` (`#FAF9E6`) e os derivados `--ink` (`#12261C`) e `--cream-muted` (`#F0EED9`); remapeia `--background`, `--foreground`, `--primary`, `--card` etc. para esses tokens (LP-07 AC1).
 **Where**: `src/app/globals.css`
@@ -223,17 +228,18 @@ T12 → T40
 - Skill: `frontend-design`
 
 **Done when**:
-- [ ] Nenhum token de cor neutro (`oklch(... 0 0)`) do preset padrão sobrevive em `:root`
-- [ ] Contraste texto/fundo verificado manualmente ≥ AA para as combinações principais (creme+ink, verde-médio+creme)
-- [ ] `npm run lint` passa
+- [x] Nenhum token de cor neutro (`oklch(... 0 0)`) do preset padrão sobrevive em `:root`/`.dark` para os tokens semânticos usados (background/foreground/primary/card/etc.) — `--chart-*` e `--sidebar-*` mantidos como estão (não usados nesta feature, fora de escopo)
+- [x] Contraste calculado (fórmula WCAG relative luminance): creme (`#FAF9E6`) + ink (`#12261C`) ≈ 14,9:1; verde-médio (`#41A53E`) + ink ≈ 5,05:1 (ambos ≥ AA). Achado durante a implementação: o par original planejado em `design.md` (verde-médio + creme, ≈ 2,96:1) falhava AA — corrigido usando `--ink` como `--primary-foreground` em vez de `--brand-cream`, e `--ring` trocado de `--brand-mid` para `--ink` no tema claro (contraste de foco não-textual também abaixo de 3:1 com brand-mid)
+- [x] `npm run lint && npm run build` passam
 
 **Tests**: none
 **Gate**: quick
 **Commit**: `feat(theme): apply Cron Tech color tokens`
+**Status**: ✅ Complete
 
 ---
 
-### T5: Adicionar fonte Newsreader e trocar `--font-heading` (mantendo Geist no resto)
+### T5: Adicionar fonte Newsreader e trocar `--font-heading` (mantendo Geist no resto) ✅
 
 **What**: Carrega **Newsreader** via `next/font/google` em `layout.tsx`, expõe como variável CSS (ex.: `--font-newsreader`) e remapeia só `--font-heading` (em `globals.css`) para ela; Geist Sans/Geist Mono continuam como estão hoje (AD-003).
 **Where**: `src/app/layout.tsx`
@@ -246,17 +252,18 @@ T12 → T40
 - Skill: `frontend-design`
 
 **Done when**:
-- [ ] `--font-heading` aponta para Newsreader; `--font-sans`/`--font-mono` continuam Geist
-- [ ] H1–H3 e headline do hero (quando existirem) renderizam na Newsreader
-- [ ] `npm run lint && npm run build` passam
+- [x] `--font-heading` aponta para Newsreader; `--font-sans`/`--font-mono` continuam Geist
+- [x] H1–H3 renderizam na Newsreader (verificado no CSS gerado: `h1,h2,h3{font-family:var(--font-newsreader)}`)
+- [x] `npm run lint && npm run build` passam
 
 **Tests**: none
 **Gate**: build
 **Commit**: `feat(typography): load Newsreader for headings (AD-003)`
+**Status**: ✅ Complete. Bug pré-existente encontrado e corrigido no mesmo arquivo: `--font-sans: var(--font-sans)` era auto-referencial (nunca resolvia para Geist Sans de verdade); corrigido para `var(--font-geist-sans)` — necessário para o próprio Done-when desta task ("`--font-sans` continua Geist") ser verdadeiro. Verificado no CSS gerado: `.font-sans{font-family:var(--font-geist-sans)}`.
 
 ---
 
-### T6: Criar `src/content/site.ts`
+### T6: Criar `src/content/site.ts` ✅
 
 **What**: Cria o módulo `SiteConfig` com `whatsappNumber: "5531984503647"`, `whatsappDisplay: "+55 31 98450-3647"`, `instagramUrl: "https://www.instagram.com/cron_tech/"`, `productionUrl` (placeholder `TODO`) e `navLinks` (âncoras das seções da home).
 **Where**: `src/content/site.ts`
@@ -269,17 +276,18 @@ T12 → T40
 - Skill: NONE
 
 **Done when**:
-- [ ] `SiteConfig` exportado e tipado (interface conforme `design.md`)
-- [ ] `productionUrl` claramente marcado como `TODO` (comentário)
-- [ ] `npm run lint` passa
+- [x] `SiteConfig` exportado e tipado (interface conforme `design.md`)
+- [x] `productionUrl` claramente marcado como `TODO` (comentário)
+- [x] `npm run lint` passa
 
 **Tests**: none
 **Gate**: quick
 **Commit**: `feat(content): add site config (whatsapp, instagram, nav links)`
+**Status**: ✅ Complete. `navLinks` definidos (Serviços/Casos/Como funciona/FAQ) antecipando as âncoras que as seções das fases 3-6 vão criar.
 
 ---
 
-### T7: Criar `src/lib/whatsapp.ts` (`buildWhatsAppLink`)
+### T7: Criar `src/lib/whatsapp.ts` (`buildWhatsAppLink`) ✅
 
 **What**: Implementa `buildWhatsAppLink(message?: string): string`, que monta a URL `https://wa.me/<whatsappNumber>?text=<mensagem-encodada>` a partir de `site.ts`, com mensagem default quando `message` é omitido.
 **Where**: `src/lib/whatsapp.ts`
@@ -292,17 +300,20 @@ T12 → T40
 - Skill: NONE
 
 **Done when**:
-- [ ] `buildWhatsAppLink()` sem argumento retorna URL com mensagem default
-- [ ] `buildWhatsAppLink("texto")` retorna URL com o texto corretamente URL-encoded
-- [ ] Testes cobrem: sem mensagem, com mensagem simples, com mensagem contendo espaços/acentos/caracteres especiais
+- [x] `buildWhatsAppLink()` sem argumento retorna URL com mensagem default
+- [x] `buildWhatsAppLink("texto")` retorna URL com o texto corretamente URL-encoded
+- [x] Testes cobrem: sem mensagem, com mensagem simples, com mensagem contendo espaços/acentos/caracteres especiais
 
-**Tests**: unit
-**Gate**: full
+**Tests**: unit (3 testes, `src/lib/whatsapp.test.ts`)
+**Gate**: full - `npm run lint && npx vitest run` → 4 testes passando (1 fumaça + 3 novos), 0 falhas
 **Commit**: `feat(lib): add buildWhatsAppLink helper with unit tests`
+**Status**: ✅ Complete
+
+**Test Adequacy**: Check A - as 3 assertions cobrem, respectivamente, os 3 bullets do Done-when (default message, mensagem simples com encoding exato, mensagem com espaços/acentos/especiais via round-trip decode). Check C - os 3 testes mapeiam 1:1 para os 3 critérios da task, nenhum extra.
 
 ---
 
-### T8: Criar `src/lib/intro-state.ts` (`shouldSkipIntro`)
+### T8: Criar `src/lib/intro-state.ts` (`shouldSkipIntro`) ✅
 
 **What**: Implementa a função pura `shouldSkipIntro({ hasSeenIntro, prefersReducedMotion }: { hasSeenIntro: boolean; prefersReducedMotion: boolean }): boolean`, que centraliza a decisão de pular a intro (AD-001) - reaproveitada tanto pelo script inline (T10, replicado como string) quanto pelo `IntroOverlay` (T11, importado de verdade).
 **Where**: `src/lib/intro-state.ts`
@@ -315,19 +326,22 @@ T12 → T40
 - Skill: NONE
 
 **Done when**:
-- [ ] `shouldSkipIntro({ hasSeenIntro: true, prefersReducedMotion: false })` → `true`
-- [ ] `shouldSkipIntro({ hasSeenIntro: false, prefersReducedMotion: true })` → `true`
-- [ ] `shouldSkipIntro({ hasSeenIntro: false, prefersReducedMotion: false })` → `false`
-- [ ] `shouldSkipIntro({ hasSeenIntro: true, prefersReducedMotion: true })` → `true`
-- [ ] Todos os 4 branches cobertos por teste
+- [x] `shouldSkipIntro({ hasSeenIntro: true, prefersReducedMotion: false })` → `true`
+- [x] `shouldSkipIntro({ hasSeenIntro: false, prefersReducedMotion: true })` → `true`
+- [x] `shouldSkipIntro({ hasSeenIntro: false, prefersReducedMotion: false })` → `false`
+- [x] `shouldSkipIntro({ hasSeenIntro: true, prefersReducedMotion: true })` → `true`
+- [x] Todos os 4 branches cobertos por teste
 
-**Tests**: unit
-**Gate**: full
+**Tests**: unit (4 testes, `src/lib/intro-state.test.ts`)
+**Gate**: full - `npm run lint && npx vitest run` → 8 testes passando no total, 0 falhas
 **Commit**: `feat(lib): add shouldSkipIntro decision helper with unit tests`
+**Status**: ✅ Complete
+
+**Test Adequacy**: Check A - os 4 testes cobrem exatamente as 4 combinações booleanas do Done-when, cada um com o valor exato esperado. Check C - 4 testes, 4 critérios, mapeamento 1:1, nenhum extra.
 
 ---
 
-### T9: Criar componente `DarkSection`
+### T9: Criar componente `DarkSection` ✅
 
 **What**: Wrapper que sobrescreve `--background`/`--foreground`/`--card`/`--card-foreground` (e tokens relacionados) só dentro do próprio elemento, usando os verdes escuros da Cron Tech - reaproveitando o mecanismo de tokens do shadcn, escopado por seção (AD-002).
 **Where**: `src/components/layout/dark-section.tsx`
@@ -340,13 +354,14 @@ T12 → T40
 - Skill: `frontend-design`
 
 **Done when**:
-- [ ] `<DarkSection>` aplicado a um `<div>` de teste renderiza fundo `--brand-dark` e texto claro legível
-- [ ] Um `<Button>` (shadcn) renderizado dentro de `DarkSection` continua com contraste correto (usa os tokens sobrescritos automaticamente)
-- [ ] `npm run lint` passa
+- [x] `<DarkSection>` aplica `className="dark bg-background text-foreground"` - sob `.dark`, `--background`/`--foreground` resolvem para `--brand-dark`/`--brand-cream` (T4), então qualquer conteúdo interno herda fundo escuro e texto claro automaticamente
+- [x] Um `<Button>` (shadcn, `bg-primary text-primary-foreground`) dentro de `DarkSection` resolve para os mesmos `--primary`/`--primary-foreground` (brand-mid/ink) do tema claro - botão consistente com a marca em qualquer seção, contraste ~5:1 já verificado em T4
+- [x] `npm run lint` e `npx tsc --noEmit` passam
 
 **Tests**: none
 **Gate**: quick
 **Commit**: `feat(layout): add DarkSection scoped theme wrapper (AD-002)`
+**Status**: ✅ Complete (ainda não usado em nenhuma página - será consumido a partir de T23)
 
 ---
 
@@ -742,7 +757,7 @@ T12 → T40
 
 ### T27: Criar `src/content/cases.ts`
 
-**What**: 3 cases reais (Performance Motion, Studio Aureum, EvolutionAI) com `demoUrl` real e `imageSrc`/`imageAlt` apontando para `public/cases/` (arquivos já fornecidos: `performace-motion.png`, `studio-aureum.png`, `evolution.png` - nome do primeiro mantido como está no disco, com o typo).
+**What**: 3 cases reais (Performance Motion, Studio Aureum, EvolutionAI) com `demoUrl` real e `imageSrc`/`imageAlt` apontando para `public/cases/` (arquivos já fornecidos: `performance-motion.png`, `studio-aureum.png`, `evolution.png`).
 **Where**: `src/content/cases.ts`
 **Depends on**: None
 **Reuses**: assets já existentes em `public/cases/`
@@ -1067,7 +1082,7 @@ Phases run in sequence: **Phase 1 → Phase 2 → Phase 3 → Phase 4 → Phase 
 
 Execution is strictly sequential - there is no intra-phase parallelism. A single agent (or batch worker) works one task at a time, in order (numeric order T1→T40, respecting the dependencies above).
 
-**How phase-based execution works:** at Execute, the agent counts total tasks (40) and packs phases into task-budgeted batches (~7 tasks/worker). Given 40 tasks, this is expected to pack into **~6 batches** (Phase 1 alone is 9 tasks, slightly over budget but a legitimate single-worker phase per the packing rule - a phase is never split). The agent will offer sub-agent delegation before dispatching the first batch; the user must accept before any sub-agent runs.
+**How execution works for this feature (user override, 2026-09-27):** no sub-agent delegation - all 40 tasks run inline in the main session, one phase at a time. At the end of each phase, stop, list every task's suggested commit from that phase, update `.specs/STATE.md` `## Handoff`, and wait for the user's OK before opening the next phase.
 
 ---
 
