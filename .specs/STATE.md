@@ -37,17 +37,17 @@
 ## Handoff
 
 - **Feature**: landing-page (`.specs/features/landing-page/`)
-- **Phase / Task**: Execute - Phases 1-4 completas e commitadas pelo usuário, incluindo o fix de regras comerciais (T1-T25 de 40). Nesta sessão: 3 ajustes finos pré-Phase 5 (subheadline do Hero, travessão em vez de hífen-pausa, correção deste Handoff) seguidos da Phase 5 completa (T26-T31) - tudo ainda não commitado (fix + 6 commits de feature sugeridos, ver relatório da sessão). **Sessão pausada aqui a pedido do usuário**: aguardando ele revisar visualmente Cases/Services/HowItWorks via `npm run dev` antes de abrir a Phase 6.
-- **Completed**: Specify, Design, Tasks (todos aprovados e validados). Execute: T1-T31 implementadas, gate verde em cada uma (ver `tasks.md`). `page.tsx`/`layout.tsx` compõem Navbar, Hero, TechStrip, PainSection, AudienceFitSection, DarkTerminalSection, DifferentiatorsSection, CasesSection, ServicesSection, HowItWorksSection e IntroOverlay - com os `id`s de âncora `#casos`/`#servicos`/`#como-funciona` batendo com `navLinks` de `site.ts`. Faltam só FaqSection, FinalCtaSection e Footer (Phase 6). Regras comerciais oficiais em `.specs/features/landing-page/context.md` (seção "Regras comerciais") e na memória de projeto do usuário (`business_model_crontech.md`) - aplicadas desde a primeira escrita em toda a Phase 5.
-- **In-progress**: nenhum arquivo em edição. **Não iniciar a Phase 6 sem confirmação explícita do usuário.**
-- **Next step**: com o OK do usuário após a revisão visual, iniciar Phase 6 (T32: `src/content/faq.ts`)
+- **Phase / Task**: Execute - Phases 1-5 completas e commitadas pelo usuário (T1-T31 de 40), incluindo o fix de regras comerciais. Nesta sessão: fix pontual em `cases.ts` (descrições dos 3 clientes estavam erradas - corrigido com o texto exato do usuário) seguido da Phase 6 completa (T32-T35: FAQ, CTA final, Footer) - tudo ainda não commitado. **Sessão pausada aqui a pedido do usuário**: aguardando ele revisar visualmente FAQ/CTA final/Footer via `npm run dev`.
+- **Completed**: Specify, Design, Tasks (todos aprovados e validados). Execute: T1-T35 implementadas, gate verde em cada uma (ver `tasks.md`). `page.tsx`/`layout.tsx` compõem as 13 seções da referência (Navbar → Footer) - feature funcionalmente completa em conteúdo; faltam só T36-T40 (revisão final de composição, reveal de scroll, SEO, QA de acessibilidade, Lighthouse). Regras comerciais oficiais em `context.md` (seção "Regras comerciais") e na memória de projeto do usuário (`business_model_crontech.md`), aplicadas desde a primeira escrita na Phase 6.
+- **In-progress**: nenhum arquivo em edição. **Não iniciar a Phase 7 (T36-T40) sem confirmação explícita do usuário.**
+- **Next step**: com o OK do usuário após a revisão visual, iniciar a Phase 7 (T36: revisão final da composição em `page.tsx` - ver nota de processo na própria T36 em `tasks.md`, o wiring incremental já foi feito fase a fase)
 - **Blockers**: none (bloqueio é de processo - aguardando review do usuário)
-- **Pendências conhecidas para T39 (QA de acessibilidade)**: verificação manual em navegador de T15 (`Tab`/`Esc` no `MobileMenu`) e T23 (terminal grande não anima sob reduced-motion) - código já implementado e coberto por mecanismo (Radix `Dialog` / `useReducedMotion()`), só falta observação visual direta.
+- **Pendências conhecidas para T39 (QA de acessibilidade)**: verificação manual em navegador de T15 (`Tab`/`Esc` no `MobileMenu`), T23 (terminal grande não anima sob reduced-motion) e T33 (`Tab`/`Enter`/`Espaço` no `FaqSection`) - código já implementado e coberto por mecanismo (Radix `Dialog`/`Accordion`, `useReducedMotion()`), só falta observação visual direta.
 - **Uncommitted files** (saída de `git status --porcelain` rodada agora, antes de escrever esta seção - regra do `CLAUDE.md`, commits são sugeridos e o usuário executa manualmente):
-  - **Fix fino pré-Phase 5** (ainda pendente de commit): `src/components/sections/hero.tsx`, `src/components/sections/differentiators.tsx`, `src/content/pain.ts` (hífen-pausa → travessão + subheadline menos ambígua)
-  - **Phase 5 (T26-T31)**: `src/content/services.ts` (T26), `src/content/cases.ts` (T27), `src/components/sections/cases.tsx` (T28), `src/components/sections/services.tsx` (T29), `src/content/howItWorks.ts` (T30), `src/components/sections/how-it-works.tsx` (T31)
-  - `src/app/page.tsx` (agora monta também Cases, Services, HowItWorks)
-  - `.specs/features/landing-page/tasks.md` (status T26-T31, nota de processo em T36)
-  - Nenhuma sobreposição entre arquivos na Phase 5 (cada task tem seus próprios arquivos)
-  - Verificado: `npm run lint`, `npx tsc --noEmit`, `npx vitest run` (14/14, inalterados) e `npm run build` verdes; `npm run dev` + `curl` confirmaram o conteúdo e os 3 `id`s de âncora no HTML gerado
+  - **Fix pontual** (ainda pendente de commit): `src/content/cases.ts` (descrições dos 3 clientes corrigidas)
+  - **Phase 6 (T32-T35)**: `src/content/faq.ts` (T32); `src/components/sections/faq.tsx` + `faq.test.tsx` (T33); `src/components/sections/final-cta.tsx` (T34); `src/components/layout/footer.tsx` (T35)
+  - `src/app/page.tsx` (agora monta também Faq, FinalCta, Footer)
+  - `.specs/features/landing-page/tasks.md` (status T32-T35, nota de processo em T36)
+  - Nenhuma sobreposição entre arquivos na Phase 6 (cada task tem seus próprios arquivos)
+  - Verificado: `npm run lint`, `npx tsc --noEmit`, `npx vitest run` (16/16) e `npm run build` verdes; `npm run dev` + `curl` confirmaram o conteúdo e o `id="faq"` no HTML gerado
 - **Branch**: `feature/landing-page`

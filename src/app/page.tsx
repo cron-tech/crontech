@@ -8,6 +8,9 @@ import { DifferentiatorsSection } from "@/components/sections/differentiators";
 import { CasesSection } from "@/components/sections/cases";
 import { ServicesSection } from "@/components/sections/services";
 import { HowItWorksSection } from "@/components/sections/how-it-works";
+import { FaqSection } from "@/components/sections/faq";
+import { FinalCtaSection } from "@/components/sections/final-cta";
+import { Footer } from "@/components/layout/footer";
 
 export default function Home() {
   return (
@@ -23,7 +26,10 @@ export default function Home() {
         <CasesSection />
         <ServicesSection />
         <HowItWorksSection />
+        <FaqSection />
+        <FinalCtaSection />
       </main>
+      <Footer />
     </>
   );
 }

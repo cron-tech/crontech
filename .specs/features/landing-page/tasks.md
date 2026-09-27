@@ -893,6 +893,8 @@ Check B: sem asserção rasa - presença/ausência de `blockquote` por contagem 
 **Commit**: `feat(content): add real case studies content`
 **Status**: ✅ Complete. `imageSrc` confirmado contra os 3 arquivos reais em `public/cases/` (`performance-motion.png`, `studio-aureum.png`, `evolution.png`, todos ~1890x872px). Descrições curtas e genéricas (ex.: "Site institucional para produtora de conteúdo audiovisual") - sem métrica fabricada, sem depoimento, só o que já era publicamente sabido pelo nome/tipo do projeto.
 
+**Post-commit fix (2026-09-27, correção do usuário)**: as 3 descrições estavam incorretas sobre o negócio de cada cliente - substituídas pelo texto exato fornecido pelo usuário: Performance Motion (consultoria esportiva/personal training), Studio Aureum (projetos residenciais/interiores), EvolutionAI (SaaS B2B de agentes de IA). `imageAlt` revisados quanto a contradição com a nova descrição - nenhum contradiz (descrevem o *tipo* de entrega - site institucional/landing page - não o ramo do cliente), mantidos como estavam.
+
 ---
 
 ### T28: Construir `CasesSection` ✅
@@ -988,7 +990,7 @@ Check B: sem asserção rasa - presença/ausência de `blockquote` por contagem 
 
 ---
 
-### T32: Criar `src/content/faq.ts`
+### T32: Criar `src/content/faq.ts` ✅
 
 **What**: ≥5 perguntas frequentes sobre modelo OaaS, prazos, processo e garantias.
 **Where**: `src/content/faq.ts`
@@ -1001,16 +1003,17 @@ Check B: sem asserção rasa - presença/ausência de `blockquote` por contagem 
 - Skill: NONE
 
 **Done when**:
-- [ ] ≥5 itens `{ question, answer }`
-- [ ] `npm run lint` passa
+- [x] ≥5 itens `{ question, answer }`
+- [x] `npm run lint` passa
 
 **Tests**: none
-**Gate**: quick
+**Gate**: quick - `npm run lint` verde
 **Commit**: `feat(content): add faq content`
+**Status**: ✅ Complete. 6 perguntas cobrindo exatamente os 6 pontos pedidos pelo usuário: pagamento (30%/70%), modelo OaaS/preço fechado, mudança de escopo (risco é da Cron Tech, pedido novo vira proposta à parte), ajustes pós-entrega (30 dias grátis, depois sob demanda), propriedade de código/acessos, e como começar (WhatsApp). Nenhuma promessa além das regras comerciais de `context.md`. Travessão (não hífen-pausa) em todas as respostas.
 
 ---
 
-### T33: Construir `FaqSection`
+### T33: Construir `FaqSection` ⚠️
 
 **What**: Accordion (shadcn, Radix `type="single" collapsible"`) a partir de `faq.ts` - abrir um item fecha qualquer outro aberto.
 **Where**: `src/components/sections/faq.tsx`
@@ -1023,17 +1026,39 @@ Check B: sem asserção rasa - presença/ausência de `blockquote` por contagem 
 - Skill: `frontend-design`
 
 **Done when**:
-- [ ] Teste (RTL): abrir a pergunta 1, depois a pergunta 2 - pergunta 1 fecha automaticamente
-- [ ] Teste (RTL): todas as perguntas de `faq.ts` renderizam como triggers do accordion
-- [ ] Verificação manual: navegável por teclado (`Tab`, `Enter`/`Espaço`)
+- [x] Teste (RTL): abrir a pergunta 1, depois a pergunta 2 - pergunta 1 fecha automaticamente
+- [x] Teste (RTL): todas as perguntas de `faq.ts` renderizam como triggers do accordion
+- [ ] Verificação manual: navegável por teclado (`Tab`, `Enter`/`Espaço`) - **pendente**: mesma situação de T15/T23, comportamento vem do `Accordion` do Radix (T2) por baixo - correto por padrão, mas ainda não observado num navegador real; adiado para T39
 
-**Tests**: unit
-**Gate**: full
+**Tests**: unit (2 testes, `src/components/sections/faq.test.tsx`)
+**Gate**: full - `npm run lint && npx vitest run` → 16 testes passando no total, 0 falhas
 **Commit**: `feat(sections): build faq accordion section`
+**Status**: ⚠️ Partial (código completo, 1 verificação manual em navegador adiada para T39). `id="faq"` (âncora da navbar). "Um item aberto por vez" testado via `aria-expanded` nos triggers (não via presença/ausência do texto da resposta no DOM - a saída do `Accordion.Content` do Radix depende de uma animação CSS via `Presence`, que não dispara `animationend` em jsdom; testar `aria-expanded` é o sinal semântico correto e determinístico do requisito, independente de timing de animação).
+
+**Test Adequacy**:
+
+*Check A - Sufficient (coverage mapping):*
+
+| Done-when criterion | `file:line` + assertion | Spec-defined outcome | Covered? |
+| --- | --- | --- | --- |
+| Todas as perguntas renderizam como triggers | `faq.test.tsx:11-15` - `faq.forEach(item => expect(screen.getByRole("button", {name: item.question})).toBeInTheDocument())` | LP-06 AC1: accordion com ≥5 perguntas | ✅ Yes |
+| Abrir pergunta 2 fecha a pergunta 1 | `faq.test.tsx:28-33` - `expect(firstTrigger).toHaveAttribute("aria-expanded","true")` após clique 1; `expect(secondTrigger).toHaveAttribute("aria-expanded","true")` e `expect(firstTrigger).toHaveAttribute("aria-expanded","false")` após clique 2 | LP-06 AC2: um item aberto por vez | ✅ Yes |
+| Navegável por teclado | (nenhum teste automatizado) | LP-06 AC2 (implícito) | ⚠️ Pendente - verificação manual adiada para T39 |
+
+*Check C - Necessary (reverse mapping):*
+
+| `file:line` | Maps to | Keep? |
+| --- | --- | --- |
+| `faq.test.tsx:8-16` | Done-when #2 (todas as perguntas são triggers) | ✅ Keep |
+| `faq.test.tsx:18-34` | Done-when #1 (um item aberto por vez) | ✅ Keep |
+
+Check B: nenhuma asserção rasa - `aria-expanded` é o estado semântico real do accordion, não um proxy fraco (call count/spy). Check D: segue o padrão RTL do projeto.
+
+**Verdict**: os 2 critérios testáveis cobertos com evidência `file:line`, outcomes batem com o spec, nenhuma asserção rasa; o 3º critério (teclado) é verificação manual explicitamente adiada, não uma lacuna de teste.
 
 ---
 
-### T34: Construir `FinalCtaSection`
+### T34: Construir `FinalCtaSection` ✅
 
 **What**: Bloco de fundo escuro (`DarkSection`) com CTA de WhatsApp proeminente via `buildWhatsAppLink()`.
 **Where**: `src/components/sections/final-cta.tsx`
@@ -1046,17 +1071,18 @@ Check B: sem asserção rasa - presença/ausência de `blockquote` por contagem 
 - Skill: `frontend-design`
 
 **Done when**:
-- [ ] CTA final abre `buildWhatsAppLink()` corretamente
-- [ ] Fundo usa `DarkSection`
-- [ ] `npm run lint` passa
+- [x] CTA final abre `buildWhatsAppLink()` corretamente
+- [x] Fundo usa `DarkSection`
+- [x] `npm run lint` passa
 
 **Tests**: none
-**Gate**: quick
+**Gate**: quick - `npm run lint` verde
 **Commit**: `feat(sections): build final CTA section`
+**Status**: ✅ Complete. Subheadline reforça as regras comerciais ("preço fechado, 30% de entrada e o saldo na entrega") em vez de copy genérica de CTA.
 
 ---
 
-### T35: Construir `Footer`
+### T35: Construir `Footer` ✅
 
 **What**: Footer com links de navegação, link do Instagram (`site.ts`, ícone `lucide-react`, `target="_blank"`, `rel="noopener noreferrer"`, `aria-label`) e ano corrente calculado dinamicamente (`new Date().getFullYear()`).
 **Where**: `src/components/layout/footer.tsx`
@@ -1069,13 +1095,14 @@ Check B: sem asserção rasa - presença/ausência de `blockquote` por contagem 
 - Skill: `frontend-design`
 
 **Done when**:
-- [ ] Link do Instagram presente com ícone, nova aba, `rel="noopener noreferrer"`, `aria-label`
-- [ ] Ano no footer é `new Date().getFullYear()`, não um número fixo
-- [ ] `npm run lint` passa
+- [x] Link do Instagram presente com ícone, nova aba, `rel="noopener noreferrer"`, `aria-label`
+- [x] Ano no footer é `new Date().getFullYear()`, não um número fixo
+- [x] `npm run lint` passa
 
 **Tests**: none
-**Gate**: quick
+**Gate**: quick - `npm run lint` verde (mais `npx tsc --noEmit` e `npm run build` verdes, integração via `page.tsx`)
 **Commit**: `feat(footer): build footer with instagram link and dynamic year`
+**Status**: ✅ Complete. **SPEC_DEVIATION**: `design.md`/esta task assumiam um ícone de Instagram em `lucide-react`, mas a versão instalada (`1.48.0`) não tem nenhum ícone de marca/rede social (removidos da lib - confirmado listando os ~6.347 exports do pacote, nenhum contém "instagram", "twitter", "facebook" etc.). Usado um SVG inline no mesmo estilo do lucide (`viewBox 0 0 24 24`, `stroke="currentColor"`, `strokeWidth=2`) desenhando o glifo clássico do Instagram (quadrado arredondado + círculo + ponto), para não fabricar uma dependência nem usar um ícone genérico sem relação com a marca. Link do WhatsApp no rodapé também usa `buildWhatsAppLink()` (não só texto estático) exibindo `siteConfig.whatsappDisplay` ("+55 31 98450-3647").
 
 ---
 
@@ -1083,7 +1110,7 @@ Check B: sem asserção rasa - presença/ausência de `blockquote` por contagem 
 
 **What**: `page.tsx` (Server Component) importa e ordena todas as seções (Navbar, Hero, TechStrip, Pain, AudienceFit, DarkTerminal, Differentiators, Cases, Services, HowItWorks, Faq, FinalCta, Footer); `IntroOverlay` é montado uma vez no `layout.tsx`, sobreposto à home.
 
-**Nota de processo (decisão do usuário, Phase 3, 2026-09-27)**: a montagem em `page.tsx`/`layout.tsx` deixou de ser um evento único no fim da feature. A partir da Phase 3, `page.tsx` é atualizado incrementalmente ao fim de cada fase (as seções recém-construídas entram na composição naquele momento, para o usuário revisar visualmente via `npm run dev`) - Navbar+Hero+TechStrip e `IntroOverlay` já foram montados ao fim da Phase 3; Pain+AudienceFit+DarkTerminal+Differentiators ao fim da Phase 4; Cases+Services+HowItWorks (com os `id`s de âncora `#casos`/`#servicos`/`#como-funciona`, já batendo com `navLinks` de `site.ts`) ao fim da Phase 5. Esta task (T36) passa a ser a **revisão final** da ordem/composição completa (todas as 13 seções na ordem da referência) e não a primeira montagem - o trabalho real de wiring incremental já foi feito fase a fase.
+**Nota de processo (decisão do usuário, Phase 3, 2026-09-27)**: a montagem em `page.tsx`/`layout.tsx` deixou de ser um evento único no fim da feature. A partir da Phase 3, `page.tsx` é atualizado incrementalmente ao fim de cada fase (as seções recém-construídas entram na composição naquele momento, para o usuário revisar visualmente via `npm run dev`) - Navbar+Hero+TechStrip e `IntroOverlay` já foram montados ao fim da Phase 3; Pain+AudienceFit+DarkTerminal+Differentiators ao fim da Phase 4; Cases+Services+HowItWorks (com os `id`s de âncora `#casos`/`#servicos`/`#como-funciona`) ao fim da Phase 5; Faq+FinalCta+Footer (com `id="faq"`) ao fim da Phase 6. Todas as 13 seções da referência já estão montadas em `page.tsx`/`layout.tsx` - esta task (T36) fica reduzida à sua verificação explícita ainda não feita (home renderiza corretamente com JavaScript desabilitado; nenhum erro de console) e a uma conferência final da ordem contra a referência, não à primeira montagem.
 **Where**: `src/app/page.tsx`
 **Depends on**: T11, T14, T15, T17, T18, T20, T22, T23, T25, T28, T29, T31, T33, T34, T35
 **Reuses**: todos os componentes de seção construídos nas fases 2-6
