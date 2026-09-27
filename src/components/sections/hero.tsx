@@ -18,7 +18,7 @@ export function Hero() {
     <section className="relative overflow-hidden px-4 pt-40 pb-20">
       <div className="mx-auto flex max-w-5xl flex-col gap-10 md:flex-row md:items-center md:justify-between">
         <div className="max-w-xl">
-          <p className="font-mono text-sm text-primary">
+          <p className="font-mono text-sm text-foreground">
             $ outcome-as-a-service
           </p>
           <h1 className="mt-4 text-4xl leading-tight sm:text-5xl">

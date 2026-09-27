@@ -93,6 +93,7 @@ Regras oficiais do modelo de negócio da Cron Tech, definidas pelo usuário em 2
 - **Pagamento**: 30% de entrada no início do projeto, 70% na entrega do resultado. À vista ou parcelado.
 - **Propriedade**: código, decisões técnicas e acessos ficam com o cliente.
 - **Pós-entrega**: 30 dias de ajustes sem custo após a entrega. Depois desse prazo, manutenção é cobrada à parte, e só quando o cliente solicitar.
+- **Fora do escopo**: qualquer pedido fora do escopo combinado na proposta original entra numa proposta à parte (novo orçamento) — não é tratado como ajuste gratuito, nem dentro dos 30 dias pós-entrega, nem durante o desenvolvimento. Confirmado pelo usuário em 2026-09-27, já usado na resposta do FAQ sobre mudança de escopo.
 
 **Regra de copy (a mais importante para revisão)**: nenhum texto do site pode sugerir que não há cobrança antes da entrega — existe uma entrada de 30% no início. A formulação correta é "preço fechado, entrada + saldo na entrega", nunca "você só paga depois de tudo pronto". Copy sempre objetiva e sem ambiguidade sobre quando o cliente paga.
 

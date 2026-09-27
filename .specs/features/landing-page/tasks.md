@@ -1011,6 +1011,8 @@ Check B: sem asserção rasa - presença/ausência de `blockquote` por contagem 
 **Commit**: `feat(content): add faq content`
 **Status**: ✅ Complete. 6 perguntas cobrindo exatamente os 6 pontos pedidos pelo usuário: pagamento (30%/70%), modelo OaaS/preço fechado, mudança de escopo (risco é da Cron Tech, pedido novo vira proposta à parte), ajustes pós-entrega (30 dias grátis, depois sob demanda), propriedade de código/acessos, e como começar (WhatsApp). Nenhuma promessa além das regras comerciais de `context.md`. Travessão (não hífen-pausa) em todas as respostas.
 
+**Post-commit fix (2026-09-27, revisão visual)**: adicionada a 7ª pergunta "Quanto tempo leva?" (posicionada logo após a de modelo OaaS/preço fechado), respondida com o texto exato do usuário e referenciando "O que entregamos" (T29) para as faixas indicativas de prazo por serviço. A regra "pedido fora do escopo combinado vira proposta à parte" (já presente na resposta de mudança de escopo) foi formalizada em `context.md` seção "Regras comerciais" como uma regra oficial nova, não só copy de FAQ. `faq.test.tsx` não precisou de nenhuma alteração - o teste 1 itera `faq.forEach` (cobre a pergunta nova automaticamente) e o teste 2 usa `faq[0]`/`faq[1]` genericamente (não depende de qual pergunta específica está em cada posição).
+
 ---
 
 ### T33: Construir `FaqSection` ⚠️
@@ -1104,9 +1106,11 @@ Check B: nenhuma asserção rasa - `aria-expanded` é o estado semântico real d
 **Commit**: `feat(footer): build footer with instagram link and dynamic year`
 **Status**: ✅ Complete. **SPEC_DEVIATION**: `design.md`/esta task assumiam um ícone de Instagram em `lucide-react`, mas a versão instalada (`1.48.0`) não tem nenhum ícone de marca/rede social (removidos da lib - confirmado listando os ~6.347 exports do pacote, nenhum contém "instagram", "twitter", "facebook" etc.). Usado um SVG inline no mesmo estilo do lucide (`viewBox 0 0 24 24`, `stroke="currentColor"`, `strokeWidth=2`) desenhando o glifo clássico do Instagram (quadrado arredondado + círculo + ponto), para não fabricar uma dependência nem usar um ícone genérico sem relação com a marca. Link do WhatsApp no rodapé também usa `buildWhatsAppLink()` (não só texto estático) exibindo `siteConfig.whatsappDisplay` ("+55 31 98450-3647").
 
+**Post-commit fix (2026-09-27, revisão visual)**: rodapé reestruturado seguindo o padrão dos footers dos cases reais (Performance Motion, Studio Aureum) - 3 blocos numa linha (empilham no mobile): (1) logo + "Cron Tech" (Newsreader) com uma descrição curta de uma linha; (2) ícones sociais em botões circulares com borda (Instagram + WhatsApp, este substituindo o texto do número mantendo o mesmo `buildWhatsAppLink()`); (3) `navLinks` em lista vertical à direita no desktop. Linha divisória (`border-t`) separando o copyright, que continua com o ano dinâmico. Sem "Desenvolvido por", sem link de política de privacidade (nenhum dos dois foi pedido). Novo ícone `WhatsAppIcon` (SVG inline, mesmo estilo do `InstagramIcon` - glifo aproximado de balão de chat + fone, já que `lucide-react` também não tem ícone de WhatsApp).
+
 ---
 
-### T36: Compor `page.tsx` e montar `IntroOverlay` no `layout`
+### T36: Compor `page.tsx` e montar `IntroOverlay` no `layout` ⚠️
 
 **What**: `page.tsx` (Server Component) importa e ordena todas as seções (Navbar, Hero, TechStrip, Pain, AudienceFit, DarkTerminal, Differentiators, Cases, Services, HowItWorks, Faq, FinalCta, Footer); `IntroOverlay` é montado uma vez no `layout.tsx`, sobreposto à home.
 
@@ -1121,17 +1125,18 @@ Check B: nenhuma asserção rasa - `aria-expanded` é o estado semântico real d
 - Skill: `frontend-design`
 
 **Done when**:
-- [ ] Todas as seções renderizam na ordem da referência, sem erro de console
-- [ ] Home renderiza corretamente com JavaScript desabilitado (verificação manual: DevTools → desabilitar JS → recarregar)
-- [ ] `npm run lint && npm run build` passam
+- [x] Todas as seções renderizam na ordem da referência (~~sem erro de console~~ - ver nota abaixo)
+- [x] Home renderiza corretamente com JavaScript desabilitado (verificado via `curl` em cada fase desde a Phase 3 - `curl` nunca executa JS, então é equivalente a JS desabilitado; conteúdo de todas as 13 seções confirmado presente no HTML)
+- [x] `npm run lint && npm run build` passam
 
 **Tests**: none
-**Gate**: build
+**Gate**: build - `npm run lint && npm run build` verdes
 **Commit**: `feat(page): compose landing page sections and mount intro overlay`
+**Status**: ⚠️ Partial. Ordem de `page.tsx` confirmada idêntica à do diagrama de `design.md` (Navbar→Hero→TechStrip→Pain→AudienceFit→DarkTerminal→Differentiators→Cases→Services→HowItWorks→Faq→FinalCta→Footer). O trabalho de wiring em si já estava feito fase a fase (ver nota de processo acima) - esta task ficou só com a verificação. **Pendente**: "sem erro de console" exige um navegador real de verdade (JS rodando) - não posso inspecionar o console do DevTools por este canal; adicionado ao `qa-checklist.md` (T39) para o usuário confirmar.
 
 ---
 
-### T37: Reveal de scroll abaixo da dobra (AD-004)
+### T37: Reveal de scroll abaixo da dobra (AD-004) ⚠️
 
 **What**: Cria um wrapper `Reveal` (client, `motion` `whileInView`, fade + translate ≤16px, ~0.4s, uma vez, desligado em reduced-motion) e aplica em todas as seções abaixo da dobra em `page.tsx` (Pain, AudienceFit, DarkTerminal, Differentiators, Cases, Services, HowItWorks, Faq, FinalCta, Footer). Hero/Navbar/TechStrip **não** recebem o wrapper.
 **Where**: `src/components/ui/reveal.tsx`, `src/app/page.tsx` (wiring)
@@ -1144,18 +1149,19 @@ Check B: nenhuma asserção rasa - `aria-expanded` é o estado semântico real d
 - Skill: `frontend-design`
 
 **Done when**:
-- [ ] Verificação manual: rolar a página revela cada seção abaixo da dobra uma única vez (não repete ao rolar de novo)
-- [ ] Verificação manual: com reduced-motion ativo, todas as seções aparecem direto, sem transição
-- [ ] Hero/Navbar/TechStrip confirmadamente sem o wrapper (sem atraso de LCP)
-- [ ] `npm run lint && npm run build` passam
+- [ ] Verificação manual: rolar a página revela cada seção abaixo da dobra uma única vez (não repete ao rolar de novo) - **pendente**, adicionado ao `qa-checklist.md` (T39)
+- [ ] Verificação manual: com reduced-motion ativo, todas as seções aparecem direto, sem transição - **pendente**, adicionado ao `qa-checklist.md` (T39)
+- [x] Hero/Navbar/TechStrip confirmadamente sem o wrapper (sem atraso de LCP)
+- [x] `npm run lint && npm run build` passam
 
 **Tests**: none
-**Gate**: build
+**Gate**: build - `npm run lint && npm run build` verdes
 **Commit**: `feat(motion): add below-the-fold scroll reveal (AD-004)`
+**Status**: ⚠️ Partial. `Reveal` (`src/components/ui/reveal.tsx`) usa `whileInView`/`viewport={{once:true}}` do `motion/react` (fade + `y:16→0`, 0.4s) e `useReducedMotion()` para pular direto ao estado final - mesmo mecanismo já usado e comprovado em `IntroOverlay`/`TerminalWindow`. Aplicado às 10 seções abaixo da dobra listadas no `What` (Pain, AudienceFit, DarkTerminal, Differentiators, Cases, Services, HowItWorks, Faq, FinalCta, Footer); Hero/Navbar/TechStrip confirmadamente sem `<Reveal>` em `page.tsx`. As 2 verificações manuais (reveal ao rolar, reduced-motion) dependem de observação visual real - adicionadas ao checklist de T39.
 
 ---
 
-### T38: Metadata e SEO
+### T38: Metadata e SEO ✅
 
 **What**: `generateMetadata`/`metadata` por rota (title/description reais da Cron Tech), Open Graph + Twitter Card com imagem de preview, `sitemap.xml`, `robots.txt`, `metadataBase` usando `site.ts.productionUrl` (placeholder `TODO`).
 **Where**: `src/app/layout.tsx`, `src/app/sitemap.ts`, `src/app/robots.ts`
@@ -1168,14 +1174,15 @@ Check B: nenhuma asserção rasa - `aria-expanded` é o estado semântico real d
 - Skill: NONE
 
 **Done when**:
-- [ ] `<title>` não é mais "Create Next App"; description real presente
-- [ ] Open Graph e Twitter Card presentes (verificável via view-source ou debugger social)
-- [ ] `sitemap.xml` e `robots.txt` acessíveis em dev (`next dev`)
-- [ ] `npm run lint && npm run build` passam
+- [x] `<title>` não é mais "Create Next App"; description real presente
+- [x] Open Graph e Twitter Card presentes (verificável via view-source ou debugger social)
+- [x] `sitemap.xml` e `robots.txt` acessíveis em dev (`next dev`)
+- [x] `npm run lint && npm run build` passam
 
 **Tests**: none
-**Gate**: build
+**Gate**: build - `npm run lint && npm run build` verdes; rotas confirmadas em `npm run dev` (`curl -o /dev/null -w "%{http_code} %{content_type}"` em `/`, `/sitemap.xml`, `/robots.txt`, `/opengraph-image`, `/icon.png` - todas 200)
 **Commit**: `feat(seo): add real metadata, open graph, sitemap and robots`
+**Status**: ✅ Complete. `<title>`: "Cron Tech — Outcome as a Service" (com template `%s — Cron Tech` para futuras rotas), `description` real, `metadataBase` usando `siteConfig.productionUrl` (ainda `TODO` - domínio real pendente, conforme já registrado em `context.md`/`spec.md`). Open Graph + Twitter Card completos, confirmados via `grep` no HTML gerado (`og:title`, `og:description`, `og:image`, `twitter:card`, etc.). Imagem de OG/Twitter gerada por código (`src/app/opengraph-image.tsx`, `next/og` `ImageResponse`, 1200x630) a partir de `docs/brand/logo-crontech.png` (fonte transparente registrada em T12) - não do `public/brand/logo-crontech.webp`. `sitemap.ts` (1 URL - site de página única) e `robots.ts` (allow tudo, aponta pro sitemap). Adicionado também `src/app/icon.png` (256x256, mesma fonte) - favicon novo, já que o `favicon.ico` do `create-next-app` era um placeholder óbvio (fora do escopo estrito do Done-when, mas serve diretamente o espírito de LP-07 AC6 de não deixar placeholder visível); `favicon.ico` antigo mantido intacto como fallback legado, Next.js expõe os dois convivendo sem conflito.
 
 ---
 
@@ -1200,10 +1207,11 @@ Check B: nenhuma asserção rasa - `aria-expanded` é o estado semântico real d
 **Tests**: none
 **Gate**: build
 **Commit**: `fix(a11y): keyboard navigation, focus states, and responsive fixes`
+**Status**: 🔲 Não iniciada (decisão explícita do usuário, 2026-09-27). Esta é uma passagem manual em navegador real - nenhuma das suas verificações pode ser feita por código/`curl` nesta sessão. Gerado `.specs/features/landing-page/qa-checklist.md` com um checklist objetivo (teclado, responsividade, reduced-motion, console, ordem visual - incluindo as pendências já registradas em T15/T23/T33/T36/T37) para o usuário executar no navegador. **Não marcar Done-when nem Status como completo até o usuário reportar o resultado** - os itens que falharem viram fix tasks na próxima sessão.
 
 ---
 
-### T40: Lighthouse mobile ≥ 90 (Performance, Acessibilidade, Best Practices, SEO)
+### T40: Lighthouse mobile ≥ 90 (Performance, Acessibilidade, Best Practices, SEO) ⚠️
 
 **What**: Roda `next build && next start` (ou preview deploy), executa Lighthouse mobile na home publicada, corrige qualquer categoria abaixo de 90 - com atenção especial a: LCP não é a intro (AD-001/AC LP-07 AC10) e peso da logo otimizada (T12).
 **Where**: variável (correções pontuais conforme achados do relatório Lighthouse)
@@ -1216,13 +1224,19 @@ Check B: nenhuma asserção rasa - `aria-expanded` é o estado semântico real d
 - Skill: NONE
 
 **Done when**:
-- [ ] Lighthouse mobile ≥ 90 em Performance, Acessibilidade, Best Practices e SEO (print/registro do relatório anexado ao PR)
-- [ ] Elemento de LCP reportado pertence ao conteúdo da home (não à intro)
-- [ ] `npm run lint && npm run build` passam
+- [ ] Lighthouse mobile ≥ 90 em Performance, Acessibilidade, Best Practices e SEO (print/registro do relatório anexado ao PR) - **Performance abaixo de 90** (ver status)
+- [x] Elemento de LCP reportado pertence ao conteúdo da home (não à intro)
+- [x] `npm run lint && npm run build` passam
 
 **Tests**: none
-**Gate**: build
+**Gate**: build - `npm run lint && npm run build` verdes
 **Commit**: `perf: final Lighthouse pass and fixes for the landing page`
+**Status**: ⚠️ Partial. Rodado com sucesso via CLI (`npx lighthouse` + Chrome instalado localmente, `CHROME_PATH` setado manualmente) contra `npm run build && npm run start` - o ambiente permitiu a tentativa, ao contrário do cenário alternativo previsto pelo usuário.
+
+- **Acessibilidade = 100, Best Practices = 100, SEO = 100.** Achado real durante a auditoria: `color-contrast` falhava (score 0) - `font-mono text-sm text-primary` (verde-médio `#41a53e` sobre creme `#faf9e6`) tem contraste 2,95:1, abaixo do mínimo 4,5:1 para texto normal. Usado em 3 lugares (`Hero` eyebrow "$ outcome-as-a-service", `ServicesSection` prazo indicativo, `HowItWorksSection` numeração) - trocado para `text-foreground` (mesmo par já validado em T4, ~14,9:1) nos 3. Depois do fix, Acessibilidade subiu de 96 para 100.
+- **Elemento de LCP confirmado correto**: `lcp-breakdown-insight` aponta o `<h1>` do Hero ("Você entrega o problema. A Cron Tech entrega o resultado pronto.") como o elemento de LCP - conteúdo real da home, não a intro. AD-001 funciona como projetado.
+- **Performance = 53 → 73 → 77** ao longo de 3 rodadas (mesma build, variação normal de simulação de rede/CPU no Lighthouse) - **abaixo de 90 nas 3**. Causa raiz identificada, não corrigida nesta sessão: `total-blocking-time` alto (1980ms → 470ms entre rodadas) e `largest-contentful-paint` em ~4,1-4,3s, ambos dominados por peso de JavaScript no cliente (`bootup-time`/`mainthread-work-breakdown` apontam ~72KB e ~64KB de chunks de primeira parte, 37-44% de bytes não usados) - originado de `motion`/Radix usados em `IntroOverlay`, `TerminalWindow`, `MobileMenu`, `FaqSection` (accordion), `Reveal`. Reduzir isso exigiria trabalho real de arquitetura (code-splitting, `next/dynamic` com `ssr:true` para adiar hidratação não-crítica, ou revisar o uso de `motion` em algum desses componentes) - **decisão consciente de não tentar às cegas no fim de uma sessão já longa, sem o usuário ter revisado ainda o restante da Phase 7 nem rodado o próprio `qa-checklist.md` (T39)**. Fica como recomendação para uma próxima sessão dedicada, não como algo corrigido aqui.
+- Relatórios completos (JSON + HTML) salvos no scratchpad da sessão (não commitados ao repo - são artefato de build/auditoria, não código-fonte): `lighthouse-report.report.json`/`.html`.
 
 ---
 

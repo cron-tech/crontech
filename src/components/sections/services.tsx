@@ -15,7 +15,7 @@ export function ServicesSection() {
               <p className="mt-2 text-muted-foreground">
                 {service.description}
               </p>
-              <p className="mt-3 font-mono text-sm text-primary">
+              <p className="mt-3 font-mono text-sm text-foreground">
                 {service.timeframe}
               </p>
               <Button asChild size="sm" className="mt-4">

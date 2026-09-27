@@ -11,6 +11,7 @@ import { HowItWorksSection } from "@/components/sections/how-it-works";
 import { FaqSection } from "@/components/sections/faq";
 import { FinalCtaSection } from "@/components/sections/final-cta";
 import { Footer } from "@/components/layout/footer";
+import { Reveal } from "@/components/ui/reveal";
 
 export default function Home() {
   return (
@@ -19,17 +20,37 @@ export default function Home() {
       <main className="flex flex-1 flex-col">
         <Hero />
         <TechStrip />
-        <PainSection />
-        <AudienceFitSection />
-        <DarkTerminalSection />
-        <DifferentiatorsSection />
-        <CasesSection />
-        <ServicesSection />
-        <HowItWorksSection />
-        <FaqSection />
-        <FinalCtaSection />
+        <Reveal>
+          <PainSection />
+        </Reveal>
+        <Reveal>
+          <AudienceFitSection />
+        </Reveal>
+        <Reveal>
+          <DarkTerminalSection />
+        </Reveal>
+        <Reveal>
+          <DifferentiatorsSection />
+        </Reveal>
+        <Reveal>
+          <CasesSection />
+        </Reveal>
+        <Reveal>
+          <ServicesSection />
+        </Reveal>
+        <Reveal>
+          <HowItWorksSection />
+        </Reveal>
+        <Reveal>
+          <FaqSection />
+        </Reveal>
+        <Reveal>
+          <FinalCtaSection />
+        </Reveal>
       </main>
-      <Footer />
+      <Reveal>
+        <Footer />
+      </Reveal>
     </>
   );
 }

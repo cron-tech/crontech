@@ -37,17 +37,17 @@
 ## Handoff
 
 - **Feature**: landing-page (`.specs/features/landing-page/`)
-- **Phase / Task**: Execute - Phases 1-5 completas e commitadas pelo usuário (T1-T31 de 40), incluindo o fix de regras comerciais. Nesta sessão: fix pontual em `cases.ts` (descrições dos 3 clientes estavam erradas - corrigido com o texto exato do usuário) seguido da Phase 6 completa (T32-T35: FAQ, CTA final, Footer) - tudo ainda não commitado. **Sessão pausada aqui a pedido do usuário**: aguardando ele revisar visualmente FAQ/CTA final/Footer via `npm run dev`.
-- **Completed**: Specify, Design, Tasks (todos aprovados e validados). Execute: T1-T35 implementadas, gate verde em cada uma (ver `tasks.md`). `page.tsx`/`layout.tsx` compõem as 13 seções da referência (Navbar → Footer) - feature funcionalmente completa em conteúdo; faltam só T36-T40 (revisão final de composição, reveal de scroll, SEO, QA de acessibilidade, Lighthouse). Regras comerciais oficiais em `context.md` (seção "Regras comerciais") e na memória de projeto do usuário (`business_model_crontech.md`), aplicadas desde a primeira escrita na Phase 6.
-- **In-progress**: nenhum arquivo em edição. **Não iniciar a Phase 7 (T36-T40) sem confirmação explícita do usuário.**
-- **Next step**: com o OK do usuário após a revisão visual, iniciar a Phase 7 (T36: revisão final da composição em `page.tsx` - ver nota de processo na própria T36 em `tasks.md`, o wiring incremental já foi feito fase a fase)
-- **Blockers**: none (bloqueio é de processo - aguardando review do usuário)
-- **Pendências conhecidas para T39 (QA de acessibilidade)**: verificação manual em navegador de T15 (`Tab`/`Esc` no `MobileMenu`), T23 (terminal grande não anima sob reduced-motion) e T33 (`Tab`/`Enter`/`Espaço` no `FaqSection`) - código já implementado e coberto por mecanismo (Radix `Dialog`/`Accordion`, `useReducedMotion()`), só falta observação visual direta.
+- **Phase / Task**: Execute - Phases 1-6 completas e commitadas pelo usuário (T1-T35 de 40). Nesta sessão, antes da Phase 7: nova pergunta de FAQ ("Quanto tempo leva?"), regra "fora do escopo → proposta à parte" formalizada em `context.md`, e Footer redesenhado seguindo a estrutura dos footers dos cases reais (3 blocos: logo+descrição, ícones sociais circulares, links de navegação) - tudo ainda não commitado. **Sessão pausada aqui a pedido do usuário**: aguardando ele revisar visualmente o Footer novo via `npm run dev` antes de confirmar o fix.
+- **Completed**: Specify, Design, Tasks (todos aprovados e validados). Execute: T1-T35 implementadas, gate verde em cada uma (ver `tasks.md`). `page.tsx`/`layout.tsx` compõem as 13 seções da referência (Navbar → Footer) - feature funcionalmente completa em conteúdo; faltam só T36-T40 (Phase 7: revisão final de composição, reveal de scroll, SEO, QA de acessibilidade, Lighthouse). Regras comerciais oficiais em `context.md` (seção "Regras comerciais", agora com a regra de "fora do escopo") e na memória de projeto do usuário (`business_model_crontech.md`).
+- **In-progress**: Phase 7 (T36-T40) autorizada pelo usuário para começar logo após este fix, com uma divisão específica: T36-T38 normais; T39 gera só um checklist manual (`qa-checklist.md`) para o usuário executar, sem ser marcada como feita; T40 tenta Lighthouse via CLI, avisando se não for possível no ambiente; um sub-agente Verifier roda ao final (autorizado pelo usuário).
+- **Next step**: aplicar o commit de fix (ver relatório da sessão), depois iniciar T36 (revisão final da composição em `page.tsx`).
+- **Blockers**: none
+- **Pendências conhecidas para T39 (QA de acessibilidade)**: verificação manual em navegador de T15 (`Tab`/`Esc` no `MobileMenu`), T23 (terminal grande não anima sob reduced-motion) e T33 (`Tab`/`Enter`/`Espaço` no `FaqSection`) - código já implementado e coberto por mecanismo (Radix `Dialog`/`Accordion`, `useReducedMotion()`), só falta observação visual direta. Estas entram no checklist de T39.
 - **Uncommitted files** (saída de `git status --porcelain` rodada agora, antes de escrever esta seção - regra do `CLAUDE.md`, commits são sugeridos e o usuário executa manualmente):
-  - **Fix pontual** (ainda pendente de commit): `src/content/cases.ts` (descrições dos 3 clientes corrigidas)
-  - **Phase 6 (T32-T35)**: `src/content/faq.ts` (T32); `src/components/sections/faq.tsx` + `faq.test.tsx` (T33); `src/components/sections/final-cta.tsx` (T34); `src/components/layout/footer.tsx` (T35)
-  - `src/app/page.tsx` (agora monta também Faq, FinalCta, Footer)
-  - `.specs/features/landing-page/tasks.md` (status T32-T35, nota de processo em T36)
-  - Nenhuma sobreposição entre arquivos na Phase 6 (cada task tem seus próprios arquivos)
-  - Verificado: `npm run lint`, `npx tsc --noEmit`, `npx vitest run` (16/16) e `npm run build` verdes; `npm run dev` + `curl` confirmaram o conteúdo e o `id="faq"` no HTML gerado
+  - `.specs/features/landing-page/context.md` (nova regra "Fora do escopo" em "Regras comerciais")
+  - `.specs/features/landing-page/tasks.md` (fix notes em T32 e T35)
+  - `src/content/faq.ts` (nova pergunta "Quanto tempo leva?")
+  - `src/components/layout/footer.tsx` (reestruturado em 3 blocos + divisória, novo `WhatsAppIcon` inline)
+  - Nenhuma sobreposição entre arquivos neste lote
+  - Verificado: `npm run lint`, `npx tsc --noEmit`, `npx vitest run` (16/16, `faq.test.tsx` não precisou de alteração) e `npm run build` verdes; `npm run dev` + `curl` confirmaram a nova pergunta e o footer novo no HTML gerado
 - **Branch**: `feature/landing-page`

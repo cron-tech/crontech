@@ -9,7 +9,7 @@ export function HowItWorksSection() {
         <ol className="mt-12 space-y-8">
           {howItWorksSteps.map((step, index) => (
             <li key={step.title} className="flex gap-4">
-              <span className="font-mono text-sm text-primary">
+              <span className="font-mono text-sm text-foreground">
                 {String(index + 1).padStart(2, "0")}
               </span>
               <div>
