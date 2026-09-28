@@ -16,7 +16,7 @@ export const siteConfig: SiteConfig = {
   whatsappNumber: "5531984503647",
   whatsappDisplay: "+55 31 98450-3647",
   instagramUrl: "https://www.instagram.com/cron_tech/",
-  productionUrl: "https://crontech.com.br", // TODO: confirmar domínio real
+  productionUrl: "https://crontech.vercel.app", // TODO: confirmar domínio real
   navLinks: [
     { label: "Serviços", href: "#servicos" },
     { label: "Casos", href: "#casos" },
