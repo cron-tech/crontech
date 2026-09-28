@@ -190,6 +190,8 @@ T12 → T40
 **Commit**: `chore(ui): add shadcn accordion primitive`
 **Status**: ✅ Complete
 
+**Post-verification fix (2026-09-27, achado do usuário no checklist de T39, visível no `FaqSection` de T33)**: o `<div>` interno de `AccordionContent` aplicava `h-(--radix-accordion-content-height)` como altura **fixa e permanente**. Essa variável CSS já é usada corretamente nas keyframes `accordion-down`/`accordion-up` (de `tw-animate-css`) para animar a altura do elemento `AccordionPrimitive.Content` **externo**, de `0` até o valor medido; aplicá-la também como altura estática do `<div>` **interno** prendia seu tamanho a uma medição pontual (feita na abertura) - qualquer mudança de layout depois (resize, rotação, fonte carregando) deixava o conteúdo cortado, sem crescer para acompanhar. Reproduzido no mobile: 1ª pergunta do FAQ abria com a resposta cortada. Fix: removida a classe do `<div>` interno - ele cresce naturalmente (`auto`) para o conteúdo; a animação de abrir/fechar não dependia dela e continua funcionando (confirmado no CSS de produção: a variável só aparece dentro de `@keyframes`, nunca mais como regra de altura estática). Afeta qualquer consumidor futuro do `Accordion`, não só o FAQ.
+
 ---
 
 ### T3: Adicionar primitive shadcn `sheet` ✅
@@ -542,7 +544,7 @@ Import de `DarkSection` removido (o `motion.div` externo replica sua classe `dar
 
 ---
 
-### T15: Construir `MobileMenu` ⚠️
+### T15: Construir `MobileMenu` ✅
 
 **What**: Menu mobile acessível usando shadcn `Sheet`, aberto por um botão hambúrguer na `Navbar`, navegável por teclado (`Esc` fecha, foco preso dentro do painel).
 **Where**: `src/components/layout/mobile-menu.tsx`
@@ -556,13 +558,13 @@ Import de `DarkSection` removido (o `motion.div` externo replica sua classe `dar
 
 **Done when**:
 - [x] Abaixo de 768px, o menu colapsa para o botão hambúrguer + `Sheet`
-- [ ] Verificação manual: `Tab`/`Shift+Tab` circulam dentro do painel aberto; `Esc` fecha - **pendente**: menu ainda não testado em navegador; verificar em T39 (QA de acessibilidade), quando a página já estiver composta e navegável
+- [x] Verificação manual: `Tab`/`Shift+Tab` circulam dentro do painel aberto; `Esc` fecha - confirmado pelo usuário no checklist de T39 (2026-09-27), sem achados
 - [x] `npm run lint` passa
 
 **Tests**: none
 **Gate**: quick - `npm run lint` verde
 **Commit**: `feat(nav): add accessible mobile menu via shadcn sheet`
-**Status**: ⚠️ Partial. Código completo (trigger `Button` ícone `Menu`, `aria-label="Abrir menu"`, `md:hidden`, inserido na `Navbar` (T14) - arquivo compartilhado entre as duas tasks, ver sobreposição sinalizada no relatório de fase; `SheetTitle` presente porém `sr-only`, já que Radix `Dialog.Content` exige um título acessível). Foco preso + `Esc` fecha são comportamento *default* do `Dialog` do Radix por baixo do `Sheet` (T3) - não código nosso - mas a verificação manual em navegador real ainda não foi feita (menu nunca foi aberto num `npm run dev`); adiada explicitamente para T39 (QA de acessibilidade), quando a página já estiver composta e navegável via `page.tsx`.
+**Status**: ✅ Complete. Código completo (trigger `Button` ícone `Menu`, `aria-label="Abrir menu"`, `md:hidden`, inserido na `Navbar` (T14) - arquivo compartilhado entre as duas tasks, ver sobreposição sinalizada no relatório de fase; `SheetTitle` presente porém `sr-only`, já que Radix `Dialog.Content` exige um título acessível). Foco preso + `Esc` fecha são comportamento *default* do `Dialog` do Radix por baixo do `Sheet` (T3) - confirmado em navegador real pelo usuário no checklist de T39 (2026-09-27), sem achados.
 
 ---
 
@@ -744,7 +746,7 @@ Import de `DarkSection` removido (o `motion.div` externo replica sua classe `dar
 
 ---
 
-### T23: Construir `DarkTerminalSection` ⚠️
+### T23: Construir `DarkTerminalSection` ✅
 
 **What**: Bloco de fundo escuro (`DarkSection`) com `TerminalWindow` grande e animado demonstrando a entrega do resultado pronto pela Cron Tech (proposta OaaS correta, sem a frase removida).
 **Where**: `src/components/sections/dark-terminal.tsx`
@@ -759,13 +761,13 @@ Import de `DarkSection` removido (o `motion.div` externo replica sua classe `dar
 **Done when**:
 - [x] Fundo usa `DarkSection` (tokens verdes escuros)
 - [x] Copy reflete a proposta OaaS correta
-- [ ] Com reduced-motion, o terminal não anima (verificação manual) - **pendente**: seção ainda não vista num navegador real; `TerminalWindow` já desliga a digitação sob `useReducedMotion()` (mecanismo verificado por código, não por observação manual) - verificação visual completa fica para T39
+- [x] Com reduced-motion, o terminal não anima (verificação manual) - confirmado pelo usuário no checklist de T39 (2026-09-27), sem achados
 - [x] `npm run lint` passa
 
 **Tests**: none
 **Gate**: quick - `npm run lint` verde
 **Commit**: `feat(sections): build dark terminal section`
-**Status**: ⚠️ Partial (mesma situação de T15: código completo, 1 verificação manual em navegador adiada para T39). `TerminalWindow` (T16) reutilizado sem alteração - `animated` mais `useReducedMotion()` interno já cobre o requisito, só falta confirmar visualmente. Copy original: "Você recebe o projeto pronto. A cobrança só chega depois da entrega." + terminal com 5 linhas (`deploy` → `build`/`testes` sucesso → `deploy: produção` → `fatura: emitida após a entrega, não antes`) - substituída no fix abaixo.
+**Status**: ✅ Complete. `TerminalWindow` (T16) reutilizado sem alteração - `animated` mais `useReducedMotion()` interno cobre o requisito, confirmado visualmente pelo usuário no checklist de T39 (2026-09-27), sem achados. Copy original: "Você recebe o projeto pronto. A cobrança só chega depois da entrega." + terminal com 5 linhas (`deploy` → `build`/`testes` sucesso → `deploy: produção` → `fatura: emitida após a entrega, não antes`) - substituída no fix abaixo.
 
 **Post-commit fix (2026-09-27, regras comerciais)**: título e terminal reescritos - a copy original violava a regra oficial de pagamento (sugeria cobrança só na entrega; na verdade há 30% de entrada no início). Título novo: "Preço fechado antes de começar. 30% na entrada, o restante na entrega." Terminal (7 linhas, conteúdo exato pedido pelo usuário): `cron-tech iniciar --projeto sistema-sob-medida` → `proposta: preço fechado aprovado` → `entrada: 30% confirmada` → `build: sucesso · testes: sucesso` → `deploy: produção` → `saldo: 70% na entrega do resultado` → `suporte: 30 dias de ajustes inclusos`. Ver `context.md` seção "Regras comerciais". `npm run lint`, `npx tsc --noEmit` e `npm run build` verdes.
 
@@ -1017,7 +1019,7 @@ Check B: sem asserção rasa - presença/ausência de `blockquote` por contagem 
 
 ---
 
-### T33: Construir `FaqSection` ⚠️
+### T33: Construir `FaqSection` ✅
 
 **What**: Accordion (shadcn, Radix `type="single" collapsible"`) a partir de `faq.ts` - abrir um item fecha qualquer outro aberto.
 **Where**: `src/components/sections/faq.tsx`
@@ -1032,12 +1034,14 @@ Check B: sem asserção rasa - presença/ausência de `blockquote` por contagem 
 **Done when**:
 - [x] Teste (RTL): abrir a pergunta 1, depois a pergunta 2 - pergunta 1 fecha automaticamente
 - [x] Teste (RTL): todas as perguntas de `faq.ts` renderizam como triggers do accordion
-- [ ] Verificação manual: navegável por teclado (`Tab`, `Enter`/`Espaço`) - **pendente**: mesma situação de T15/T23, comportamento vem do `Accordion` do Radix (T2) por baixo - correto por padrão, mas ainda não observado num navegador real; adiado para T39
+- [x] Verificação manual: navegável por teclado (`Tab`, `Enter`/`Espaço`) - confirmado pelo usuário no checklist de T39 (2026-09-27): achado 1 bug real (resposta cortada no mobile na 1ª pergunta), corrigido em `src/components/ui/accordion.tsx` (ver fix note abaixo)
 
 **Tests**: unit (2 testes, `src/components/sections/faq.test.tsx`)
 **Gate**: full - `npm run lint && npx vitest run` → 16 testes passando no total, 0 falhas
 **Commit**: `feat(sections): build faq accordion section`
-**Status**: ⚠️ Partial (código completo, 1 verificação manual em navegador adiada para T39). `id="faq"` (âncora da navbar). "Um item aberto por vez" testado via `aria-expanded` nos triggers (não via presença/ausência do texto da resposta no DOM - a saída do `Accordion.Content` do Radix depende de uma animação CSS via `Presence`, que não dispara `animationend` em jsdom; testar `aria-expanded` é o sinal semântico correto e determinístico do requisito, independente de timing de animação).
+**Status**: ✅ Complete. `id="faq"` (âncora da navbar). "Um item aberto por vez" testado via `aria-expanded` nos triggers (não via presença/ausência do texto da resposta no DOM - a saída do `Accordion.Content` do Radix depende de uma animação CSS via `Presence`, que não dispara `animationend` em jsdom; testar `aria-expanded` é o sinal semântico correto e determinístico do requisito, independente de timing de animação).
+
+**Post-verification fix (2026-09-27, achado do usuário no checklist de T39)**: bug de altura fixa no `AccordionContent` (componente `Accordion` de T2, não específico do FAQ, mas só observado aqui) cortava a resposta da 1ª pergunta no mobile. Ver detalhe completo na nota de T39 abaixo e em T2. `faq.test.tsx` não precisou de alteração - os 2 testes continuam verdes.
 
 **Test Adequacy**:
 
@@ -1112,7 +1116,7 @@ Check B: nenhuma asserção rasa - `aria-expanded` é o estado semântico real d
 
 ---
 
-### T36: Compor `page.tsx` e montar `IntroOverlay` no `layout` ⚠️
+### T36: Compor `page.tsx` e montar `IntroOverlay` no `layout` ✅
 
 **What**: `page.tsx` (Server Component) importa e ordena todas as seções (Navbar, Hero, TechStrip, Pain, AudienceFit, DarkTerminal, Differentiators, Cases, Services, HowItWorks, Faq, FinalCta, Footer); `IntroOverlay` é montado uma vez no `layout.tsx`, sobreposto à home.
 
@@ -1134,11 +1138,11 @@ Check B: nenhuma asserção rasa - `aria-expanded` é o estado semântico real d
 **Tests**: none
 **Gate**: build - `npm run lint && npm run build` verdes
 **Commit**: `feat(page): compose landing page sections and mount intro overlay`
-**Status**: ⚠️ Partial. Ordem de `page.tsx` confirmada idêntica à do diagrama de `design.md` (Navbar→Hero→TechStrip→Pain→AudienceFit→DarkTerminal→Differentiators→Cases→Services→HowItWorks→Faq→FinalCta→Footer). O trabalho de wiring em si já estava feito fase a fase (ver nota de processo acima) - esta task ficou só com a verificação. **Pendente**: "sem erro de console" exige um navegador real de verdade (JS rodando) - não posso inspecionar o console do DevTools por este canal; adicionado ao `qa-checklist.md` (T39) para o usuário confirmar.
+**Status**: ✅ Complete. Ordem de `page.tsx` confirmada idêntica à do diagrama de `design.md` (Navbar→Hero→TechStrip→Pain→AudienceFit→DarkTerminal→Differentiators→Cases→Services→HowItWorks→Faq→FinalCta→Footer). O trabalho de wiring em si já estava feito fase a fase (ver nota de processo acima) - esta task ficou só com a verificação. "Sem erro de console" confirmado pelo usuário no checklist de T39 (2026-09-27) - único achado do checklist inteiro foi o bug de altura do FAQ (ver T2/T33), não um erro de console.
 
 ---
 
-### T37: Reveal de scroll abaixo da dobra (AD-004) ⚠️
+### T37: Reveal de scroll abaixo da dobra (AD-004) ✅
 
 **What**: Cria um wrapper `Reveal` (client, `motion` `whileInView`, fade + translate ≤16px, ~0.4s, uma vez, desligado em reduced-motion) e aplica em todas as seções abaixo da dobra em `page.tsx` (Pain, AudienceFit, DarkTerminal, Differentiators, Cases, Services, HowItWorks, Faq, FinalCta, Footer). Hero/Navbar/TechStrip **não** recebem o wrapper.
 **Where**: `src/components/ui/reveal.tsx`, `src/app/page.tsx` (wiring)
@@ -1151,15 +1155,17 @@ Check B: nenhuma asserção rasa - `aria-expanded` é o estado semântico real d
 - Skill: `frontend-design`
 
 **Done when**:
-- [ ] Verificação manual: rolar a página revela cada seção abaixo da dobra uma única vez (não repete ao rolar de novo) - **pendente**, adicionado ao `qa-checklist.md` (T39)
-- [ ] Verificação manual: com reduced-motion ativo, todas as seções aparecem direto, sem transição - **pendente**, adicionado ao `qa-checklist.md` (T39)
+- [x] Verificação manual: rolar a página revela cada seção abaixo da dobra uma única vez (não repete ao rolar de novo) - confirmado pelo usuário no checklist de T39 (2026-09-27), sem achados
+- [x] Verificação manual: com reduced-motion ativo, todas as seções aparecem direto, sem transição - confirmado pelo usuário no checklist de T39 (2026-09-27), sem achados
 - [x] Hero/Navbar/TechStrip confirmadamente sem o wrapper (sem atraso de LCP)
 - [x] `npm run lint && npm run build` passam
 
 **Tests**: none
 **Gate**: build - `npm run lint && npm run build` verdes
 **Commit**: `feat(motion): add below-the-fold scroll reveal (AD-004)`
-**Status**: ⚠️ Partial. `Reveal` (`src/components/ui/reveal.tsx`) usa `whileInView`/`viewport={{once:true}}` do `motion/react` (fade + `y:16→0`, 0.4s) e `useReducedMotion()` para pular direto ao estado final - mesmo mecanismo já usado e comprovado em `IntroOverlay`/`TerminalWindow`. Aplicado às 10 seções abaixo da dobra listadas no `What` (Pain, AudienceFit, DarkTerminal, Differentiators, Cases, Services, HowItWorks, Faq, FinalCta, Footer); Hero/Navbar/TechStrip confirmadamente sem `<Reveal>` em `page.tsx`. As 2 verificações manuais (reveal ao rolar, reduced-motion) dependem de observação visual real - adicionadas ao checklist de T39.
+**Status**: ✅ Complete. `Reveal` (`src/components/ui/reveal.tsx`) usa `whileInView`/`viewport={{once:true}}` do `motion/react` (fade + `y:16→0`, 0.4s) e `useReducedMotion()` para pular direto ao estado final - mesmo mecanismo já usado e comprovado em `IntroOverlay`/`TerminalWindow`. Aplicado às 10 seções abaixo da dobra listadas no `What` (Pain, AudienceFit, DarkTerminal, Differentiators, Cases, Services, HowItWorks, Faq, FinalCta, Footer); Hero/Navbar/TechStrip confirmadamente sem `<Reveal>` em `page.tsx`. As 2 verificações manuais confirmadas pelo usuário no checklist de T39, sem achados neste componente (o bug de no-JS achado depois, numa sessão anterior a este checklist, já tinha sido corrigido - ver `validation.md` e a nota de fix já registrada aqui).
+
+**Post-verification fix (2026-09-27, achado do usuário, não pego pelo Verifier)**: bug real de LP-01 AC6 ("home funcional sem JS") - `motion.div`'s `initial={{opacity:0,y:16}}` renderiza como `style="opacity:0;transform:translateY(16px)"` inline no próprio HTML do servidor (confirmado via `curl` antes do fix: 10 wrappers `.reveal`, todos com esse estilo inline). Sem JavaScript, esse estilo nunca é sobrescrito pela animação - as 10 seções abaixo da dobra ficavam invisíveis (texto presente no DOM, mas com opacidade zero). Corrigido: `Reveal` ganhou uma classe estável `.reveal` (`cn("reveal", className)`); `layout.tsx` ganhou `<noscript><style>.reveal{opacity:1 !important;transform:none !important}</style></noscript>` - `!important` numa regra de stylesheet sobrescreve um `style` inline sem `!important`, e `<noscript>` só é aplicado quando JS está desligado, então o comportamento animado com JS fica intocado. Confirmado no HTML gerado (`npm run build` → `.next/server/app/index.html`) e via `npm run dev` + `curl` que a regra realmente força `opacity:1` nos 10 wrappers. `validation.md` (LP-01 AC6) atualizado registrando que a verificação original do Verifier cobriu só a intro, não o `Reveal` - lição registrada em `.specs/lessons.json` (L-002).
 
 ---
 
@@ -1188,7 +1194,7 @@ Check B: nenhuma asserção rasa - `aria-expanded` é o estado semântico real d
 
 ---
 
-### T39: QA de acessibilidade, teclado e responsividade
+### T39: QA de acessibilidade, teclado e responsividade ✅
 
 **What**: Passagem manual por toda a home verificando: navegação completa por teclado (navbar, menu mobile, accordion, todo CTA), foco visível em todo elemento interativo, sem scroll horizontal/sobreposição a partir de 320px; corrige o que for encontrado.
 **Where**: variável (correções pontuais nos componentes de seção/layout conforme achados; sem novo arquivo dedicado)
@@ -1201,13 +1207,17 @@ Check B: nenhuma asserção rasa - `aria-expanded` é o estado semântico real d
 - Skill: NONE
 
 **Done when**:
-- [ ] Checklist manual completo: `Tab`/`Shift+Tab`/`Enter`/`Espaço`/`Esc` alcançam e ativam todo CTA de WhatsApp, todo item de FAQ e o menu mobile, em ordem lógica
-- [ ] Nenhum scroll horizontal em 320px, 375px, 768px, 1024px, 1440px (DevTools responsive mode)
-- [ ] Indicador de foco visível em todo elemento interativo testado
-- [ ] `npm run lint && npm run build` passam
+- [x] Checklist manual completo: `Tab`/`Shift+Tab`/`Enter`/`Espaço`/`Esc` alcançam e ativam todo CTA de WhatsApp, todo item de FAQ e o menu mobile, em ordem lógica
+- [x] Nenhum scroll horizontal em 320px, 375px, 768px, 1024px, 1440px (DevTools responsive mode)
+- [x] Indicador de foco visível em todo elemento interativo testado
+- [x] `npm run lint && npm run build` passam
 
 **Tests**: none
-**Gate**: build
+**Gate**: build - `npm run lint && npm run build` verdes
+**Commit**: `fix(a11y): keyboard navigation, focus states, and responsive fixes`
+**Status**: ✅ Complete. Checklist (`qa-checklist.md`) executado pelo usuário num navegador real. Resultado: todos os itens OK, exceto 1 bug encontrado no FAQ no mobile - corrigido nesta task (ver abaixo). Isso fecha também as verificações manuais que ficaram pendentes em T15 (`Tab`/`Esc` no `MobileMenu`), T23 (terminal grande não anima sob reduced-motion), T33 (`Tab`/`Enter`/`Espaço` no `FaqSection`), T36 (sem erro de console) e T37 (reveal ao rolar uma vez; reduced-motion sem transição) - todas cobertas pelo mesmo checklist, marcadas como concluídas em suas respectivas tasks.
+
+**Bug encontrado e corrigido**: no mobile, ao abrir a 1ª pergunta do FAQ, a resposta aparecia cortada (as demais abriam normalmente). Causa: `src/components/ui/accordion.tsx` aplicava `h-(--radix-accordion-content-height)` como altura **fixa e permanente** no `<div>` interno do `AccordionContent` - essa variável CSS é medida por Radix num instante específico (abertura) e usada corretamente nas keyframes `accordion-down`/`accordion-up` (que animam a altura do elemento `AccordionPrimitive.Content` **externo**, de `0` até essa variável); forçá-la como altura estática do `<div>` **interno** também prendia seu tamanho a essa medição pontual, e qualquer mudança de layout depois (resize, rotação, fonte carregando) deixava o conteúdo cortado sem crescer para acompanhar. Fix: removida a classe `h-(--radix-accordion-content-height)` do `<div>` interno - ele agora cresce naturalmente (`auto`) para o conteúdo; a animação de abrir/fechar continua funcionando porque já era implementada via as keyframes no elemento externo, que nunca dependeram do `<div>` interno ter essa altura fixa. Confirmado no CSS de produção gerado (`npm run build` → `.next/static/chunks/*.css`): a variável `--radix-accordion-content-height` só aparece dentro de `@keyframes accordion-down/up`, não mais como uma regra de altura estática. `faq.test.tsx` (2 testes) continua passando sem alteração.
 **Commit**: `fix(a11y): keyboard navigation, focus states, and responsive fixes`
 **Status**: 🔲 Não iniciada (decisão explícita do usuário, 2026-09-27). Esta é uma passagem manual em navegador real - nenhuma das suas verificações pode ser feita por código/`curl` nesta sessão. Gerado `.specs/features/landing-page/qa-checklist.md` com um checklist objetivo (teclado, responsividade, reduced-motion, console, ordem visual - incluindo as pendências já registradas em T15/T23/T33/T36/T37) para o usuário executar no navegador. **Não marcar Done-when nem Status como completo até o usuário reportar o resultado** - os itens que falharem viram fix tasks na próxima sessão.
 

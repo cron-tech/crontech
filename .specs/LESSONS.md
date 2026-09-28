@@ -20,6 +20,12 @@ Seen once or not yet corroborated. Tracked, not trusted.
 - evidence: src/components/sections/differentiators.test.tsx:9-20 (mutant: differentiators.tsx:47 length>0 -> length>=0) (component-tests)
 - last seen: 2026-09-28T00:28:36Z
 
+### L-002 - When checking that a home works with JS disabled, inspect every component that sets visibility via inline styles (e.g. animation libraries applying opacity/transform inline), not just the component the AC's prose happens to name.
+- signal: `ac_gap` · recurrence: 1 feature(s) · scope: `no-js-visibility` · harmful: 0
+- features: landing-page
+- evidence: LP-01 AC6 (no-js-visibility)
+- last seen: 2026-09-28T00:54:41Z
+
 ## Quarantined (failed when applied - ignore)
 
 A confirmed lesson that recurred alongside failure. Kept for the maintainer to review.

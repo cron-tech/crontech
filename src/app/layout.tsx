@@ -64,6 +64,13 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         />
         {/* Hidden by default (and without JS, since data-intro is never set) - never forces display:block, so it doesn't fight the overlay's own display:flex when shown. */}
         <style>{`html:not([data-intro="show"]) .intro-overlay{display:none}`}</style>
+        {/* Without JS, framer-motion never animates .reveal wrappers (AD-004)
+            out of their initial opacity:0/translated state - it's rendered as
+            an inline style in the server HTML itself. <noscript> only applies
+            when scripts are off, so the JS-enabled scroll reveal is untouched. */}
+        <noscript>
+          <style>{`.reveal{opacity:1 !important;transform:none !important}`}</style>
+        </noscript>
       </head>
       <body className="min-h-full flex flex-col">
         <IntroOverlay />

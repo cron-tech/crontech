@@ -3,7 +3,7 @@
   "promote_threshold": 2,
   "window_days": 45,
   "quarantine_threshold": 2,
-  "next_id": 2,
+  "next_id": 3,
   "lessons": [
     {
       "id": "L-001",
@@ -22,6 +22,24 @@
       ],
       "created": "2026-09-28T00:28:36Z",
       "last_seen": "2026-09-28T00:28:36Z"
+    },
+    {
+      "id": "L-002",
+      "key": "ac_gap::when checking that a home works with js disabled inspect every component that sets visibility via inline styles e g animation libraries applying opacity transform inline not just the component the ac s prose happens to name",
+      "text": "When checking that a home works with JS disabled, inspect every component that sets visibility via inline styles (e.g. animation libraries applying opacity/transform inline), not just the component the AC's prose happens to name.",
+      "signal": "ac_gap",
+      "scope": "no-js-visibility",
+      "status": "candidate",
+      "features": [
+        "landing-page"
+      ],
+      "recurrence": 1,
+      "harmful": 0,
+      "evidence": [
+        "LP-01 AC6 (no-js-visibility)"
+      ],
+      "created": "2026-09-28T00:54:41Z",
+      "last_seen": "2026-09-28T00:54:41Z"
     }
   ]
 }
