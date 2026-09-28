@@ -45,7 +45,10 @@ export function DifferentiatorsSection({
         </div>
 
         {testimonials.length > 0 && (
-          <div className="mt-16 grid gap-8 sm:grid-cols-2">
+          <div
+            data-testid="testimonials-block"
+            className="mt-16 grid gap-8 sm:grid-cols-2"
+          >
             {testimonials.map((testimonial) => (
               <blockquote
                 key={testimonial.author}

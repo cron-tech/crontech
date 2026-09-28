@@ -18,6 +18,9 @@ describe("DifferentiatorsSection", () => {
       ),
     ).toBeInTheDocument();
     expect(screen.queryAllByRole("blockquote")).toHaveLength(0);
+    expect(
+      screen.queryByTestId("testimonials-block"),
+    ).not.toBeInTheDocument();
   });
 
   it("renders the testimonials block when testimonials has at least one item", () => {

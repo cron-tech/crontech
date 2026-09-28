@@ -1,0 +1,27 @@
+{
+  "schema": 1,
+  "promote_threshold": 2,
+  "window_days": 45,
+  "quarantine_threshold": 2,
+  "next_id": 2,
+  "lessons": [
+    {
+      "id": "L-001",
+      "key": "surviving_mutant::when testing a conditional render block assert the wrapper container element itself is absent in the empty case e g via a stable test id not just that specific child elements have zero count a zero count assertion cannot tell an absent wrapper from an empty one",
+      "text": "When testing a conditional-render block, assert the wrapper/container element itself is absent in the empty case (e.g. via a stable test id), not just that specific child elements have zero count - a zero-count assertion cannot tell an absent wrapper from an empty one.",
+      "signal": "surviving_mutant",
+      "scope": "component-tests",
+      "status": "candidate",
+      "features": [
+        "landing-page"
+      ],
+      "recurrence": 1,
+      "harmful": 0,
+      "evidence": [
+        "src/components/sections/differentiators.test.tsx:9-20 (mutant: differentiators.tsx:47 length>0 -> length>=0) (component-tests)"
+      ],
+      "created": "2026-09-28T00:28:36Z",
+      "last_seen": "2026-09-28T00:28:36Z"
+    }
+  ]
+}
